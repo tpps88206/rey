@@ -1,5 +1,6 @@
 import CategorySelector from '@/components/CategorySelector';
 import { categories } from '@/constants/Categories';
+import { FontAwesome5 } from '@expo/vector-icons';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useNavigation } from '@react-navigation/native';
 import * as ImagePicker from 'expo-image-picker';
@@ -168,9 +169,10 @@ export default function AddRecordScreen() {
 
   useLayoutEffect(() => {
     navigation.setOptions({
+      headerStyle: { backgroundColor: '#232936' },
       headerRight: () => (
         <TouchableOpacity onPress={handleSave} style={{ padding: 8, borderRadius: 8, backgroundColor: '#3578E5', marginRight: 4 }}>
-          <Text style={{ color: '#fff', fontSize: 22 }}>✔</Text>
+          <FontAwesome5 name="check" size={22} color="#fff" />
         </TouchableOpacity>
       ),
     });
@@ -182,6 +184,7 @@ export default function AddRecordScreen() {
       <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.tabRow}>
         {tabs.map((tab, idx) => (
           <TouchableOpacity key={tab} onPress={() => setActiveTab(idx)} style={[styles.tab, activeTab === idx && styles.activeTab]}>
+            <FontAwesome5 name={tabIcon(tab)} size={18} color={activeTab === idx ? '#3578E5' : '#fff'} style={{ marginBottom: 2 }} />
             <Text style={{ color: activeTab === idx ? '#3578E5' : '#fff', fontSize: 16 }}>{tab}</Text>
           </TouchableOpacity>
         ))}
@@ -202,7 +205,11 @@ export default function AddRecordScreen() {
       {/* 插入圖片、名稱 */}
       <View style={styles.row}>
         <TouchableOpacity style={styles.imgBtn} onPress={pickImage}>
-          {img ? <Image source={{ uri: img }} style={{ width: 36, height: 36, borderRadius: 8 }} /> : <Text style={{ color: '#888' }}>📷</Text>}
+          {img ? (
+            <Image source={{ uri: img }} style={{ width: 36, height: 36, borderRadius: 8 }} />
+          ) : (
+            <FontAwesome5 name="camera" size={22} color="#888" />
+          )}
         </TouchableOpacity>
         <TextInput
           style={styles.nameInput}
@@ -313,4 +320,16 @@ const styles = StyleSheet.create({
   backBtnText: { color: '#fff', fontSize: 22 },
   saveBtn: { padding: 8, borderRadius: 8, backgroundColor: '#3578E5', marginRight: 4 },
   saveBtnText: { color: '#fff', fontSize: 22 },
-}); 
+});
+
+function tabIcon(tab: string) {
+  switch(tab) {
+    case '建議': return 'star';
+    case '支出': return 'minus-circle';
+    case '收入': return 'plus-circle';
+    case '轉帳': return 'exchange-alt';
+    case '應收款項': return 'arrow-down';
+    case '應付款項': return 'arrow-up';
+    default: return 'circle';
+  }
+} 
