@@ -57,39 +57,37 @@ export default function CategorySelector({ categories, selectedCategory, selecte
 
   // 子類別 Grid，第一個為返回
   return (
-    <View style={{ flex: 1 }}>
       <View style={styles.gridWrap}>
         <TouchableOpacity
-          style={[styles.gridItem, { backgroundColor: 'transparent' }]}
-          onPress={() => setShowSub(false)}
-          activeOpacity={0.8}
+            style={[styles.gridItem, { backgroundColor: 'transparent' }]}
+            onPress={() => setShowSub(false)}
+            activeOpacity={0.8}
         >
-          <View style={[styles.iconCircle, { backgroundColor: '#444', borderWidth: 0 }]}> 
+          <View style={[styles.iconCircle, { backgroundColor: '#444', borderWidth: 0 }]}>
             <FontAwesome5 name="chevron-left" size={24} color="#fff" />
           </View>
           <Text style={styles.gridText}>返回</Text>
         </TouchableOpacity>
         {current.children.map((sub, idx) => (
-          <TouchableOpacity
-            key={sub.name}
-            style={[
-              styles.gridItem,
-              { backgroundColor: 'transparent' },
-            ]}
-            onPress={() => {
-              onSubSelect(idx);
-              setShowSub(false);
-            }}
-            activeOpacity={0.8}
-          >
-            <View style={[styles.iconCircle, { backgroundColor: current.color, borderWidth: selectedSub === idx ? 3 : 0, borderColor: '#3578E5' }]}> 
-              <FontAwesome5 name={sub.icon} size={24} color="#fff" />
-            </View>
-            <Text style={styles.gridText}>{sub.name}</Text>
-          </TouchableOpacity>
+            <TouchableOpacity
+                key={sub.name}
+                style={[
+                  styles.gridItem,
+                  { backgroundColor: 'transparent' },
+                ]}
+                onPress={() => {
+                  onSubSelect(idx);
+                  setShowSub(false);
+                }}
+                activeOpacity={0.8}
+            >
+              <View style={[styles.iconCircle, { backgroundColor: current.color, borderWidth: selectedSub === idx ? 3 : 0, borderColor: '#3578E5' }]}>
+                <FontAwesome5 name={sub.icon} size={24} color="#fff" />
+              </View>
+              <Text style={styles.gridText}>{sub.name}</Text>
+            </TouchableOpacity>
         ))}
       </View>
-    </View>
   );
 }
 
@@ -108,7 +106,7 @@ const styles = StyleSheet.create({
     flexBasis: 'auto',
     flexGrow: 1,
     minWidth: MIN_ITEM_SIZE,
-    maxWidth: 90,
+    maxWidth: MIN_ITEM_SIZE,
   },
   iconCircle: {
     width: 48,
