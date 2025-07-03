@@ -1,7 +1,8 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { useNavigation } from '@react-navigation/native';
 import * as ImagePicker from 'expo-image-picker';
 import { useRouter } from 'expo-router';
-import { useState } from 'react';
+import { useLayoutEffect, useState } from 'react';
 import { Alert, Image, Modal, ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
 
 const tabs = ['建議', '支出', '收入', '轉帳', '應收款項', '應付款項'];
@@ -130,6 +131,7 @@ export default function AddRecordScreen() {
   const [tags, setTags] = useState('');
   const [note, setNote] = useState('');
   const router = useRouter();
+  const navigation = useNavigation();
 
   // 圖片選擇
   const pickImage = async () => {
@@ -172,18 +174,18 @@ export default function AddRecordScreen() {
     }
   };
 
+  useLayoutEffect(() => {
+    navigation.setOptions({
+      headerRight: () => (
+        <TouchableOpacity onPress={handleSave} style={{ padding: 8, borderRadius: 8, backgroundColor: '#3578E5', marginRight: 4 }}>
+          <Text style={{ color: '#fff', fontSize: 22 }}>✔</Text>
+        </TouchableOpacity>
+      ),
+    });
+  }, [navigation, handleSave]);
+
   return (
     <ScrollView style={styles.container}>
-      {/* 上方返回與儲存按鈕同一行 */}
-      <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginBottom: 8 }}>
-        <TouchableOpacity onPress={() => router.back()} style={styles.backBtn}>
-          <Text style={styles.backBtnText}>✕</Text>
-        </TouchableOpacity>
-        <Text style={{ color: '#fff', fontSize: 20, fontWeight: 'bold' }}>新增記錄</Text>
-        <TouchableOpacity onPress={handleSave} style={styles.saveBtn}>
-          <Text style={styles.saveBtnText}>✔</Text>
-        </TouchableOpacity>
-      </View>
       {/* 上方多分類 Tab */}
       <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.tabRow}>
         {tabs.map((tab, idx) => (
