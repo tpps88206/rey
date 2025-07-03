@@ -1,5 +1,6 @@
 import CategorySelector from '@/components/CategorySelector';
 import { categories } from '@/constants/Categories';
+import { Colors } from '@/constants/Colors';
 import { FontAwesome5 } from '@expo/vector-icons';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useNavigation } from '@react-navigation/native';
@@ -60,11 +61,11 @@ function PickerModal({ visible, options, value, onSelect, onClose, title }: { vi
           <ScrollView>
             {options.map(opt => (
               <TouchableOpacity key={opt} style={styles.modalOption} onPress={() => { onSelect(opt); onClose(); }}>
-                <Text style={{ color: value === opt ? '#3578E5' : '#fff', fontSize: 18 }}>{opt}</Text>
+                <Text style={{ color: value === opt ? Colors.primary : Colors.text, fontSize: 18 }}>{opt}</Text>
               </TouchableOpacity>
             ))}
           </ScrollView>
-          <TouchableOpacity style={styles.modalCancel} onPress={onClose}><Text style={{ color: '#fff' }}>取消</Text></TouchableOpacity>
+          <TouchableOpacity style={styles.modalCancel} onPress={onClose}><Text style={{ color: Colors.text }}>取消</Text></TouchableOpacity>
         </View>
       </View>
     </Modal>
@@ -81,18 +82,18 @@ function AdvancedPayModal({ visible, mode, setMode, method, setMethod, onClose }
           <View style={styles.advTabRow}>
             {tabs.map((t, i) => (
               <TouchableOpacity key={t} style={[styles.advTab, mode === i && styles.advTabActive]} onPress={() => setMode(i)}>
-                <Text style={{ color: mode === i ? '#3578E5' : '#fff', fontSize: 16 }}>{t}</Text>
+                <Text style={{ color: mode === i ? Colors.primary : Colors.text, fontSize: 16 }}>{t}</Text>
               </TouchableOpacity>
             ))}
           </View>
           <View style={{ marginTop: 16 }}>
-            <Text style={{ color: '#fff', fontSize: 16 }}>入帳方式</Text>
-            <TouchableOpacity style={styles.advMethodBtn} onPress={() => setMethod('立即入帳')}><Text style={{ color: method === '立即入帳' ? '#3578E5' : '#fff' }}>立即入帳</Text></TouchableOpacity>
-            <TouchableOpacity style={styles.advMethodBtn} onPress={() => setMethod('延後入帳')}><Text style={{ color: method === '延後入帳' ? '#3578E5' : '#fff' }}>延後入帳</Text></TouchableOpacity>
+            <Text style={{ color: Colors.text, fontSize: 16 }}>入帳方式</Text>
+            <TouchableOpacity style={styles.advMethodBtn} onPress={() => setMethod('立即入帳')}><Text style={{ color: method === '立即入帳' ? Colors.primary : Colors.text }}>立即入帳</Text></TouchableOpacity>
+            <TouchableOpacity style={styles.advMethodBtn} onPress={() => setMethod('延後入帳')}><Text style={{ color: method === '延後入帳' ? Colors.primary : Colors.text }}>延後入帳</Text></TouchableOpacity>
           </View>
           <View style={{ flexDirection: 'row', marginTop: 24 }}>
-            <TouchableOpacity style={styles.modalCancel} onPress={onClose}><Text style={{ color: '#fff' }}>取消</Text></TouchableOpacity>
-            <TouchableOpacity style={styles.modalOk} onPress={onClose}><Text style={{ color: '#3578E5' }}>確定</Text></TouchableOpacity>
+            <TouchableOpacity style={styles.modalCancel} onPress={onClose}><Text style={{ color: Colors.text }}>取消</Text></TouchableOpacity>
+            <TouchableOpacity style={styles.modalOk} onPress={onClose}><Text style={{ color: Colors.primary }}>確定</Text></TouchableOpacity>
           </View>
         </View>
       </View>
@@ -169,10 +170,10 @@ export default function AddRecordScreen() {
 
   useLayoutEffect(() => {
     navigation.setOptions({
-      headerStyle: { backgroundColor: '#232936' },
+      headerStyle: { backgroundColor: Colors.background },
       headerRight: () => (
-        <TouchableOpacity onPress={handleSave} style={{ padding: 8, borderRadius: 8, backgroundColor: '#3578E5', marginRight: 4 }}>
-          <FontAwesome5 name="check" size={22} color="#fff" />
+        <TouchableOpacity onPress={handleSave} style={{ padding: 8, borderRadius: 8, backgroundColor: Colors.primary, marginRight: 4 }}>
+          <FontAwesome5 name="check" size={22} color={Colors.text} />
         </TouchableOpacity>
       ),
     });
@@ -184,8 +185,8 @@ export default function AddRecordScreen() {
       <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.tabRow}>
         {tabs.map((tab, idx) => (
           <TouchableOpacity key={tab} onPress={() => setActiveTab(idx)} style={[styles.tab, activeTab === idx && styles.activeTab]}>
-            <FontAwesome5 name={tabIcon(tab)} size={18} color={activeTab === idx ? '#3578E5' : '#fff'} style={{ marginBottom: 2 }} />
-            <Text style={{ color: activeTab === idx ? '#3578E5' : '#fff', fontSize: 16 }}>{tab}</Text>
+            <FontAwesome5 name={tabIcon(tab)} size={18} color={activeTab === idx ? Colors.primary : Colors.text} style={{ marginBottom: 2 }} />
+            <Text style={{ color: activeTab === idx ? Colors.primary : Colors.text, fontSize: 16 }}>{tab}</Text>
           </TouchableOpacity>
         ))}
       </ScrollView>
@@ -208,7 +209,7 @@ export default function AddRecordScreen() {
           {img ? (
             <Image source={{ uri: img }} style={{ width: 36, height: 36, borderRadius: 8 }} />
           ) : (
-            <FontAwesome5 name="camera" size={22} color="#888" />
+            <FontAwesome5 name="camera" size={22} color={Colors.text} />
           )}
         </TouchableOpacity>
         <TextInput
@@ -216,7 +217,7 @@ export default function AddRecordScreen() {
           value={name}
           onChangeText={setName}
           placeholder="名稱"
-          placeholderTextColor="#888"
+          placeholderTextColor={Colors.text}
         />
       </View>
       {/* 其餘欄位兩兩一排 */}
@@ -233,7 +234,7 @@ export default function AddRecordScreen() {
         </View>
         <View style={{ width: '48%' }}>
           <View style={styles.selectRow}>
-            <TextInput style={styles.selectValueInput} value={shop} onChangeText={setShop} placeholder="商家" placeholderTextColor="#888" />
+            <TextInput style={styles.selectValueInput} value={shop} onChangeText={setShop} placeholder="商家" placeholderTextColor={Colors.text} />
           </View>
         </View>
         <View style={{ width: '48%' }}>
@@ -243,32 +244,32 @@ export default function AddRecordScreen() {
         </View>
         <View style={{ width: '48%' }}>
           <View style={styles.selectRow}>
-            <TextInput style={styles.selectValueInput} value={date} onChangeText={setDate} placeholder="日期" placeholderTextColor="#888" />
+            <TextInput style={styles.selectValueInput} value={date} onChangeText={setDate} placeholder="日期" placeholderTextColor={Colors.text} />
           </View>
         </View>
         <View style={{ width: '48%' }}>
           <View style={styles.selectRow}>
-            <TextInput style={styles.selectValueInput} value={time} onChangeText={setTime} placeholder="時間" placeholderTextColor="#888" />
+            <TextInput style={styles.selectValueInput} value={time} onChangeText={setTime} placeholder="時間" placeholderTextColor={Colors.text} />
           </View>
         </View>
         <View style={{ width: '48%' }}>
           <View style={styles.selectRow}>
-            <TextInput style={styles.selectValueInput} value={invoice} onChangeText={setInvoice} placeholder="發票號碼" placeholderTextColor="#888" />
+            <TextInput style={styles.selectValueInput} value={invoice} onChangeText={setInvoice} placeholder="發票號碼" placeholderTextColor={Colors.text} />
           </View>
         </View>
         <View style={{ width: '48%' }}>
           <View style={styles.selectRow}>
-            <TextInput style={styles.selectValueInput} value={random} onChangeText={setRandom} placeholder="隨機碼" placeholderTextColor="#888" />
+            <TextInput style={styles.selectValueInput} value={random} onChangeText={setRandom} placeholder="隨機碼" placeholderTextColor={Colors.text} />
           </View>
         </View>
         <View style={{ width: '48%' }}>
           <View style={styles.selectRow}>
-            <TextInput style={styles.selectValueInput} value={tags} onChangeText={setTags} placeholder="標籤" placeholderTextColor="#888" />
+            <TextInput style={styles.selectValueInput} value={tags} onChangeText={setTags} placeholder="標籤" placeholderTextColor={Colors.text} />
           </View>
         </View>
         <View style={{ width: '48%' }}>
           <View style={styles.selectRow}>
-            <TextInput style={styles.selectValueInput} value={note} onChangeText={setNote} placeholder="備註" placeholderTextColor="#888" />
+            <TextInput style={styles.selectValueInput} value={note} onChangeText={setNote} placeholder="備註" placeholderTextColor={Colors.text} />
           </View>
         </View>
       </View>
@@ -282,44 +283,44 @@ export default function AddRecordScreen() {
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: '#232936', padding: 16 },
+  container: { flex: 1, backgroundColor: Colors.background, padding: 16 },
   tabRow: { flexDirection: 'row', marginBottom: 12 },
   tab: { paddingVertical: 8, paddingHorizontal: 18, borderRadius: 20, marginRight: 8 },
-  activeTab: { backgroundColor: '#2C3442' },
+  activeTab: { backgroundColor: Colors.tabActive },
   catRow: { flexDirection: 'row', flexWrap: 'wrap', marginBottom: 16 },
   catCircle: { width: 56, height: 56, borderRadius: 28, alignItems: 'center', justifyContent: 'center', margin: 6 },
-  amountBox: { flexDirection: 'row', alignItems: 'center', backgroundColor: '#2C3442', borderRadius: 10, padding: 16, marginBottom: 16 },
-  amountLabel: { color: '#fff', fontSize: 18, marginRight: 8 },
-  amountText: { color: '#fff', fontSize: 32, flex: 1 },
+  amountBox: { flexDirection: 'row', alignItems: 'center', backgroundColor: Colors.backgroundSecondary, borderRadius: 10, padding: 16, marginBottom: 16 },
+  amountLabel: { color: Colors.text, fontSize: 18, marginRight: 8 },
+  amountText: { color: Colors.text, fontSize: 32, flex: 1 },
   row: { flexDirection: 'row', alignItems: 'center', marginBottom: 12 },
-  imgBtn: { width: 40, height: 40, borderRadius: 8, backgroundColor: '#2C3442', alignItems: 'center', justifyContent: 'center', marginRight: 8 },
-  nameInput: { flex: 1, backgroundColor: '#2C3442', borderRadius: 8, color: '#fff', fontSize: 18, paddingHorizontal: 12, height: 40 },
-  selectRow: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', backgroundColor: '#2C3442', borderRadius: 8, paddingHorizontal: 12, height: 44, marginBottom: 10 },
-  selectLabel: { color: '#fff', fontSize: 16 },
-  selectValue: { color: '#fff', fontSize: 16 },
-  selectValueInput: { color: '#fff', fontSize: 16, flex: 1, paddingLeft: 8 },
+  imgBtn: { width: 40, height: 40, borderRadius: 8, backgroundColor: Colors.backgroundSecondary, alignItems: 'center', justifyContent: 'center', marginRight: 8 },
+  nameInput: { flex: 1, backgroundColor: Colors.backgroundSecondary, borderRadius: 8, color: Colors.text, fontSize: 18, paddingHorizontal: 12, height: 40 },
+  selectRow: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', backgroundColor: Colors.backgroundSecondary, borderRadius: 8, paddingHorizontal: 12, height: 44, marginBottom: 10 },
+  selectLabel: { color: Colors.text, fontSize: 16 },
+  selectValue: { color: Colors.text, fontSize: 16 },
+  selectValueInput: { color: Colors.text, fontSize: 16, flex: 1, paddingLeft: 8 },
   padOverlay: { flex: 1, backgroundColor: 'rgba(0,0,0,0.4)', justifyContent: 'flex-end' },
-  padBox: { backgroundColor: '#232936', padding: 12, borderTopLeftRadius: 16, borderTopRightRadius: 16 },
+  padBox: { backgroundColor: Colors.background, padding: 12, borderTopLeftRadius: 16, borderTopRightRadius: 16 },
   padRow: { flexDirection: 'row', justifyContent: 'space-between', marginBottom: 8 },
-  padKey: { flex: 1, alignItems: 'center', justifyContent: 'center', paddingVertical: 16, marginHorizontal: 2, borderRadius: 8, backgroundColor: '#2C3442' },
-  padKeyText: { color: '#fff', fontSize: 28 },
-  padKeyOk: { backgroundColor: '#3578E5' },
-  padKeyOkText: { color: '#fff' },
+  padKey: { flex: 1, alignItems: 'center', justifyContent: 'center', paddingVertical: 16, marginHorizontal: 2, borderRadius: 8, backgroundColor: Colors.backgroundSecondary },
+  padKeyText: { color: Colors.text, fontSize: 28 },
+  padKeyOk: { backgroundColor: Colors.primary },
+  padKeyOkText: { color: Colors.text },
   modalOverlay: { flex: 1, backgroundColor: 'rgba(0,0,0,0.5)', justifyContent: 'center', alignItems: 'center' },
-  modalBox: { backgroundColor: '#232936', borderRadius: 16, padding: 24, width: 300, alignItems: 'center' },
-  modalTitle: { color: '#fff', fontSize: 20, marginBottom: 16 },
+  modalBox: { backgroundColor: Colors.background, borderRadius: 16, padding: 24, width: 300, alignItems: 'center' },
+  modalTitle: { color: Colors.text, fontSize: 20, marginBottom: 16 },
   modalOption: { paddingVertical: 12, alignItems: 'center' },
-  modalCancel: { marginTop: 16, backgroundColor: '#2C3442', borderRadius: 8, paddingVertical: 10, paddingHorizontal: 32 },
-  modalOk: { marginTop: 16, backgroundColor: '#fff', borderRadius: 8, paddingVertical: 10, paddingHorizontal: 32 },
-  advBox: { backgroundColor: '#232936', borderRadius: 16, padding: 24, width: 320, alignItems: 'center' },
+  modalCancel: { marginTop: 16, backgroundColor: Colors.backgroundSecondary, borderRadius: 8, paddingVertical: 10, paddingHorizontal: 32 },
+  modalOk: { marginTop: 16, backgroundColor: Colors.text, borderRadius: 8, paddingVertical: 10, paddingHorizontal: 32 },
+  advBox: { backgroundColor: Colors.background, borderRadius: 16, padding: 24, width: 320, alignItems: 'center' },
   advTabRow: { flexDirection: 'row', marginBottom: 12 },
   advTab: { paddingVertical: 8, paddingHorizontal: 18, borderRadius: 20, marginRight: 8 },
-  advTabActive: { backgroundColor: '#2C3442' },
-  advMethodBtn: { backgroundColor: '#2C3442', borderRadius: 8, padding: 10, marginTop: 8, alignItems: 'center' },
-  backBtn: { padding: 8, borderRadius: 8, backgroundColor: '#2C3442', marginLeft: 4 },
-  backBtnText: { color: '#fff', fontSize: 22 },
-  saveBtn: { padding: 8, borderRadius: 8, backgroundColor: '#3578E5', marginRight: 4 },
-  saveBtnText: { color: '#fff', fontSize: 22 },
+  advTabActive: { backgroundColor: Colors.backgroundSecondary },
+  advMethodBtn: { backgroundColor: Colors.backgroundSecondary, borderRadius: 8, padding: 10, marginTop: 8, alignItems: 'center' },
+  backBtn: { padding: 8, borderRadius: 8, backgroundColor: Colors.backgroundSecondary, marginLeft: 4 },
+  backBtnText: { color: Colors.text, fontSize: 22 },
+  saveBtn: { padding: 8, borderRadius: 8, backgroundColor: Colors.primary, marginRight: 4 },
+  saveBtnText: { color: Colors.text, fontSize: 22 },
 });
 
 function tabIcon(tab: string) {

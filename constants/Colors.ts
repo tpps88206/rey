@@ -7,6 +7,23 @@ const tintColorLight = '#0a7ea4';
 const tintColorDark = '#fff';
 
 export const Colors = {
+  background: '#232936', // 主背景
+  backgroundSecondary: '#2C3442', // 次背景
+  primary: '#3578E5', // 主要色
+  text: '#fff', // 主要文字
+  textSecondary: '#888', // 次要文字
+  border: '#222', // 邊框
+  tabActive: '#2C3442', // tab 選中
+  tabInactive: 'transparent',
+  icon: '#fff',
+  iconInactive: '#888',
+  error: '#F77',
+  success: '#9F9',
+  warning: '#FFC107',
+  info: '#4A90E2',
+  gray: '#BDBDBD',
+  lightGray: '#ECEDEE',
+  darkGray: '#151718',
   light: {
     text: '#11181C',
     background: '#fff',
