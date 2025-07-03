@@ -67,6 +67,13 @@ export default function TabLayout() {
           tabBarIcon: ({ color, size }: any) => <Ionicons name="stats-chart-outline" size={size} color={color} />,
         }}
       />
+      <Tabs.Screen
+        name="more"
+        options={{
+          title: '更多',
+          tabBarIcon: ({ color, size }: any) => <Ionicons name="menu-outline" size={size} color={color} />,
+        }}
+      />
     </Tabs>
   );
 }
