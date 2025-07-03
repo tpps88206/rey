@@ -1,3 +1,4 @@
+import Calendar from '@/components/Calendar';
 import { useEffect, useState } from 'react';
 import { FlatList, StyleSheet, Text, View } from 'react-native';
 
@@ -47,29 +48,19 @@ const mockRecords: Record[] = [
 
 export default function HomeScreen() {
   const [records, setRecords] = useState<Record[]>([]);
+  const [selectedDate, setSelectedDate] = useState('2025-06-01');
 
   useEffect(() => {
-    // 先用假資料
     setRecords(mockRecords);
   }, []);
 
+  // 過濾當天記錄
+  const filtered = records.filter(r => r.date === selectedDate);
+
   return (
     <View style={styles.container}>
-      {/* 日曆區塊（靜態 UI） */}
-      <View style={styles.calendarBox}>
-        <Text style={styles.timeText}>12:05</Text>
-        <Text style={styles.dateText}>2025/6/1</Text>
-        <View style={styles.calendarRow}>
-          <Text style={styles.monthCircle}>6月</Text>
-          <Text style={styles.calendarDay}>02</Text>
-          <Text style={styles.calendarDay}>03</Text>
-          <Text style={styles.calendarDayDim}>04</Text>
-          <Text style={styles.calendarDay}>05</Text>
-          <Text style={styles.calendarDay}>06</Text>
-          <Text style={styles.calendarDaySat}>07</Text>
-        </View>
-        {/* ...可再擴充更多行... */}
-      </View>
+      {/* 自訂月曆元件 */}
+      <Calendar selected={selectedDate} onSelect={setSelectedDate} />
       {/* 當月統計區塊 */}
       <View style={styles.summaryBox}>
         <Text style={styles.summaryText}>TWD 每月統計</Text>
@@ -78,7 +69,7 @@ export default function HomeScreen() {
       </View>
       {/* 記錄列表 */}
       <FlatList
-        data={records}
+        data={filtered}
         keyExtractor={item => item.id}
         renderItem={({ item }) => (
           <View style={styles.recordItem}>
@@ -89,6 +80,7 @@ export default function HomeScreen() {
             <Text style={{ color: '#aaa', fontSize: 12 }}>{item.note}</Text>
           </View>
         )}
+        ListEmptyComponent={<Text style={{ color: '#888', textAlign: 'center', marginTop: 24 }}>當天沒有記錄</Text>}
       />
     </View>
   );

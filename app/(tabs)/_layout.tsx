@@ -7,14 +7,15 @@ import { useColorScheme } from '@/hooks/useColorScheme';
 function CenterTabButton({ children }: any) {
   const router = useRouter();
   const segments = useSegments();
-  const isHome = segments[segments.length - 1] === 'index';
+  const last = segments[segments.length - 1];
+  const isHome = last === '' || last === 'index';
   return (
     <TouchableOpacity
       onPress={() => {
         if (isHome) {
-          router.push('/add');
+          router.navigate('add');
         } else {
-          router.push('/');
+          router.navigate('index');
         }
       }}
       style={{ alignItems: 'center', justifyContent: 'center', top: -16 }}
@@ -37,16 +38,16 @@ export default function TabLayout() {
       }}
     >
       <Tabs.Screen
-        name="index"
-        options={{
-          title: '個人',
-          tabBarIcon: ({ color, size }: any) => <Ionicons name="person-outline" size={size} color={color} />,
-        }}
-      />
-      <Tabs.Screen
         name="explore"
         options={{
           title: '帳戶',
+          tabBarIcon: ({ color, size }: any) => <Ionicons name="wallet-outline" size={size} color={color} />,
+        }}
+      />
+      <Tabs.Screen
+        name="project"
+        options={{
+          title: '專案/預算',
           tabBarIcon: ({ color, size }: any) => <Ionicons name="wallet-outline" size={size} color={color} />,
         }}
       />
