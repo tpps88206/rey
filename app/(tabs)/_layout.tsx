@@ -7,8 +7,7 @@ import { useColorScheme } from '@/hooks/useColorScheme';
 function CenterTabButton({ children }: any) {
   const router = useRouter();
   const segments = useSegments();
-  const isHome = segments.length === 1 && segments[0] === '';
-  console.log(segments)
+  const isHome = segments.length === 1;
   return (
     <TouchableOpacity
       onPress={() => {

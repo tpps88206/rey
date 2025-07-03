@@ -27,26 +27,53 @@ const mockBarData = [
   { month: '6月', income: 170000, expense: 140000 },
 ];
 
-function SimpleBarChart() {
+function SimpleLineChart() {
   const max = Math.max(...mockBarData.map(d => Math.max(d.income, d.expense)));
+  const min = Math.min(...mockBarData.map(d => Math.min(d.income, d.expense)));
+  const chartHeight = 120;
+  const chartWidth = 320; // 可用 Dimensions.get('window').width 取代
+  const padding = 24;
+  const points = mockBarData.map((d, i) => {
+    const x = padding + i * ((chartWidth - 2 * padding) / (mockBarData.length - 1));
+    const y = padding + (chartHeight - 2 * padding) * (1 - (d.income - min) / (max - min || 1));
+    return { x, y };
+  });
   return (
-    <View style={barStyles.chartContainer}>
-      <View style={barStyles.barsRow}>
+    <View style={[barStyles.lineChartBox, { height: chartHeight }]}> 
+      {/* 折線 */}
+      {points.map((pt, i) =>
+        i > 0 ? (
+          <View
+            key={i}
+            style={[
+              barStyles.line,
+              {
+                left: points[i - 1].x,
+                top: points[i - 1].y,
+                width: Math.hypot(points[i].x - points[i - 1].x, points[i].y - points[i - 1].y),
+                transform: [
+                  { rotateZ: `${Math.atan2(points[i].y - points[i - 1].y, points[i].x - points[i - 1].x)}rad` },
+                ],
+              },
+            ]}
+          />
+        ) : null
+      )}
+      {/* 資料點 */}
+      {points.map((pt, i) => (
+        <View
+          key={i}
+          style={[
+            barStyles.dot,
+            { left: pt.x - 5, top: pt.y - 5 },
+          ]}
+        />
+      ))}
+      {/* X 軸標籤 */}
+      <View style={[barStyles.xLabelsRow, { width: chartWidth, left: 0, top: chartHeight - padding + 4 }]}> 
         {mockBarData.map((d, i) => (
-          <View key={i} style={barStyles.barGroup}>
-            {/* 收入長條 */}
-            <View style={[barStyles.bar, { height: 80 * d.income / max, backgroundColor: '#9F9' }]} />
-            {/* 支出長條 */}
-            <View style={[barStyles.bar, { height: 80 * d.expense / max, backgroundColor: '#F77', marginTop: 2 }]} />
-            <Text style={barStyles.label}>{d.month}</Text>
-          </View>
+          <Text key={i} style={barStyles.label}>{d.month}</Text>
         ))}
-      </View>
-      <View style={barStyles.legendRow}>
-        <View style={[barStyles.legendDot, { backgroundColor: '#9F9' }]} />
-        <Text style={barStyles.legendText}>收入</Text>
-        <View style={[barStyles.legendDot, { backgroundColor: '#F77' }]} />
-        <Text style={barStyles.legendText}>支出</Text>
       </View>
     </View>
   );
@@ -54,20 +81,18 @@ function SimpleBarChart() {
 
 const barStyles = StyleSheet.create({
   chartContainer: { marginBottom: 16, marginTop: 8 },
-  barsRow: { flexDirection: 'row', alignItems: 'flex-end', height: 90, paddingHorizontal: 8 },
-  barGroup: { alignItems: 'center', marginHorizontal: 4 },
-  bar: { width: 12, borderRadius: 4 },
+  lineChartBox: { width: '100%', maxWidth: 400, alignSelf: 'center', backgroundColor: '#232936', position: 'relative', marginBottom: 16 },
+  line: { position: 'absolute', height: 2, backgroundColor: '#4A90E2', borderRadius: 2 },
+  dot: { position: 'absolute', width: 10, height: 10, borderRadius: 5, backgroundColor: '#4A90E2', borderWidth: 2, borderColor: '#fff' },
   label: { color: '#aaa', fontSize: 10, marginTop: 2 },
-  legendRow: { flexDirection: 'row', alignItems: 'center', marginTop: 4, marginLeft: 8 },
-  legendDot: { width: 10, height: 10, borderRadius: 5, marginRight: 4 },
-  legendText: { color: '#aaa', fontSize: 12, marginRight: 12 },
+  xLabelsRow: { position: 'absolute', flexDirection: 'row', justifyContent: 'space-between' },
 });
 
 export default function AccountOverview() {
   return (
     <View style={styles.container}>
       <Text style={styles.title}>帳戶總覽</Text>
-      <SimpleBarChart />
+      <SimpleLineChart />
       <FlatList
         data={mockAccounts}
         keyExtractor={item => item.id}
