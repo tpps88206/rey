@@ -12,7 +12,7 @@ function CenterTabButton({ children }: any) {
     <TouchableOpacity
       onPress={() => {
         if (isHome) {
-          router.navigate('add');
+          router.push('/add');
         } else {
           router.navigate('/');
         }
