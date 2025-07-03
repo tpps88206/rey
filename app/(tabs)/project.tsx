@@ -1,17 +1,20 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { useEffect, useState } from 'react';
+import { useFocusEffect } from '@react-navigation/native';
+import React, { useState } from 'react';
 import { FlatList, StyleSheet, Text, View } from 'react-native';
 
 export default function ProjectScreen() {
   const [records, setRecords] = useState<any[]>([]);
 
-  useEffect(() => {
-    const load = async () => {
-      const data = await AsyncStorage.getItem('records');
-      setRecords(data ? JSON.parse(data) : []);
-    };
-    load();
-  }, []);
+  useFocusEffect(
+    React.useCallback(() => {
+      const load = async () => {
+        const data = await AsyncStorage.getItem('records');
+        setRecords(data ? JSON.parse(data) : []);
+      };
+      load();
+    }, [])
+  );
 
   // 根據專案分類統計
   const projects = Array.from(new Set(records.map(r => r.project)));

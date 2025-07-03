@@ -1,6 +1,7 @@
 import Calendar from '@/components/Calendar';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { useEffect, useState } from 'react';
+import { useFocusEffect } from '@react-navigation/native';
+import React, { useState } from 'react';
 import { FlatList, StyleSheet, Text, View } from 'react-native';
 
 // 資料型別定義
@@ -34,13 +35,15 @@ export default function HomeScreen() {
   const [records, setRecords] = useState<any[]>([]);
   const [selectedDate, setSelectedDate] = useState('2025-06-01');
 
-  useEffect(() => {
-    const load = async () => {
-      const data = await AsyncStorage.getItem('records');
-      setRecords(data ? JSON.parse(data) : []);
-    };
-    load();
-  }, [selectedDate]); // 每次切換日期都重新讀取
+  useFocusEffect(
+    React.useCallback(() => {
+      const load = async () => {
+        const data = await AsyncStorage.getItem('records');
+        setRecords(data ? JSON.parse(data) : []);
+      };
+      load();
+    }, [selectedDate])
+  );
 
   // 過濾當天記錄
   const filtered = records.filter(r => r.date === selectedDate);
