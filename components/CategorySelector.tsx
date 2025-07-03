@@ -55,15 +55,20 @@ export default function CategorySelector({ categories, selectedCategory, selecte
     );
   }
 
-  // 子類別 Grid
+  // 子類別 Grid，第一個為返回
   return (
     <View style={{ flex: 1 }}>
-      <TouchableOpacity style={styles.backBtn} onPress={() => setShowSub(false)}>
-        <FontAwesome5 name="chevron-left" size={18} color="#fff" />
-        <Text style={{ color: '#fff', fontSize: 16, marginLeft: 4 }}>返回</Text>
-        <Text style={{ color: '#fff', fontSize: 16, marginLeft: 12 }}>{current.name}</Text>
-      </TouchableOpacity>
       <View style={styles.gridWrap}>
+        <TouchableOpacity
+          style={[styles.gridItem, { backgroundColor: 'transparent' }]}
+          onPress={() => setShowSub(false)}
+          activeOpacity={0.8}
+        >
+          <View style={[styles.iconCircle, { backgroundColor: '#444', borderWidth: 0 }]}> 
+            <FontAwesome5 name="chevron-left" size={24} color="#fff" />
+          </View>
+          <Text style={styles.gridText}>返回</Text>
+        </TouchableOpacity>
         {current.children.map((sub, idx) => (
           <TouchableOpacity
             key={sub.name}
@@ -119,5 +124,4 @@ const styles = StyleSheet.create({
     fontSize: 14,
     textAlign: 'center',
   },
-  backBtn: { flexDirection: 'row', alignItems: 'center', marginBottom: 12, marginLeft: 4 },
 }); 
