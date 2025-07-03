@@ -123,7 +123,7 @@ export default function AddRecordScreen() {
   const [advVisible, setAdvVisible] = useState(false);
   const [advMode, setAdvMode] = useState(0);
   const [advMethod, setAdvMethod] = useState('立即入帳');
-  const [date, setDate] = useState('2025/06/01');
+  const [date, setDate] = useState('2025-06-01');
   const [time, setTime] = useState('12:05');
   const [invoice, setInvoice] = useState('');
   const [random, setRandom] = useState('');
