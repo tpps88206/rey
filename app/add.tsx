@@ -224,61 +224,51 @@ export default function AddRecordScreen() {
       <View style={{ flexDirection: 'row', flexWrap: 'wrap', justifyContent: 'space-between' }}>
         <View style={{ width: '48%' }}>
           <TouchableOpacity style={styles.selectRow} onPress={() => setAccountPicker(true)}>
-            <Text style={styles.selectLabel}>帳戶</Text>
             <Text style={styles.selectValue}>{account}</Text>
           </TouchableOpacity>
         </View>
         <View style={{ width: '48%' }}>
           <TouchableOpacity style={styles.selectRow} onPress={() => setProjectPicker(true)}>
-            <Text style={styles.selectLabel}>專案</Text>
             <Text style={styles.selectValue}>{project}</Text>
           </TouchableOpacity>
         </View>
         <View style={{ width: '48%' }}>
           <View style={styles.selectRow}>
-            <Text style={styles.selectLabel}>商家</Text>
             <TextInput style={styles.selectValueInput} value={shop} onChangeText={setShop} placeholder="商家" placeholderTextColor="#888" />
           </View>
         </View>
         <View style={{ width: '48%' }}>
           <TouchableOpacity style={styles.selectRow} onPress={() => setAdvVisible(true)}>
-            <Text style={styles.selectLabel}>進階付款</Text>
             <Text style={styles.selectValue}>{['單次', '週期', '分期'][advMode]}・{advMethod}</Text>
           </TouchableOpacity>
         </View>
         <View style={{ width: '48%' }}>
           <View style={styles.selectRow}>
-            <Text style={styles.selectLabel}>日期</Text>
             <TextInput style={styles.selectValueInput} value={date} onChangeText={setDate} placeholder="日期" placeholderTextColor="#888" />
           </View>
         </View>
         <View style={{ width: '48%' }}>
           <View style={styles.selectRow}>
-            <Text style={styles.selectLabel}>時間</Text>
             <TextInput style={styles.selectValueInput} value={time} onChangeText={setTime} placeholder="時間" placeholderTextColor="#888" />
           </View>
         </View>
         <View style={{ width: '48%' }}>
           <View style={styles.selectRow}>
-            <Text style={styles.selectLabel}>發票號碼</Text>
             <TextInput style={styles.selectValueInput} value={invoice} onChangeText={setInvoice} placeholder="發票號碼" placeholderTextColor="#888" />
           </View>
         </View>
         <View style={{ width: '48%' }}>
           <View style={styles.selectRow}>
-            <Text style={styles.selectLabel}>隨機碼</Text>
             <TextInput style={styles.selectValueInput} value={random} onChangeText={setRandom} placeholder="隨機碼" placeholderTextColor="#888" />
           </View>
         </View>
         <View style={{ width: '48%' }}>
           <View style={styles.selectRow}>
-            <Text style={styles.selectLabel}>標籤</Text>
             <TextInput style={styles.selectValueInput} value={tags} onChangeText={setTags} placeholder="標籤" placeholderTextColor="#888" />
           </View>
         </View>
         <View style={{ width: '48%' }}>
           <View style={styles.selectRow}>
-            <Text style={styles.selectLabel}>備註</Text>
             <TextInput style={styles.selectValueInput} value={note} onChangeText={setNote} placeholder="備註" placeholderTextColor="#888" />
           </View>
         </View>
