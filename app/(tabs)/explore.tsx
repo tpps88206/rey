@@ -33,25 +33,27 @@ function CombinedChart() {
   const padding = 24;
   const barWidth = 10;
   const barGap = 4;
-  const groupWidth = barWidth * 2 + barGap * 2;
+  const n = mockChartData.length;
   const maxTotal = Math.max(...mockChartData.map(d => d.total));
   const maxBar = Math.max(...mockChartData.map(d => Math.max(d.income, d.expense)));
+  // 平均分配每個月的 group 寬度
+  const groupSpace = (chartWidth - 2 * padding) / n;
   // 折線點位
   const points = mockChartData.map((d, i) => {
-    const x = padding + i * ((chartWidth - 2 * padding) / (mockChartData.length - 1));
+    const x = padding + groupSpace * (i + 0.5);
     const y = padding + (chartHeight - 2 * padding) * (1 - d.total / maxTotal);
     return { x, y };
   });
   return (
-    <View style={[barStyles.combinedChartBox, { height: chartHeight }]}> 
+    <View style={[barStyles.combinedChartBox, { height: chartHeight + 24 }]}> 
       {/* 長條圖 */}
       <View style={[barStyles.barRow, { height: chartHeight - padding }]}> 
         {mockChartData.map((d, i) => {
-          const baseX = padding + i * ((chartWidth - 2 * padding) / (mockChartData.length - 1)) - groupWidth / 2;
+          const groupX = padding + groupSpace * (i + 0.5) - barWidth - barGap / 2;
           const incomeH = (chartHeight - 2 * padding) * d.income / maxBar;
           const expenseH = (chartHeight - 2 * padding) * d.expense / maxBar;
           return (
-            <View key={i} style={[barStyles.barGroup, { left: baseX, bottom: 0 }]}> 
+            <View key={i} style={[barStyles.barGroup, { left: groupX, bottom: 0, width: barWidth * 2 + barGap }]}> 
               <View style={[barStyles.bar, { height: incomeH, backgroundColor: '#9F9', width: barWidth, marginRight: barGap }]} />
               <View style={[barStyles.bar, { height: expenseH, backgroundColor: '#F77', width: barWidth }]} />
             </View>
@@ -87,10 +89,12 @@ function CombinedChart() {
           ]}
         />
       ))}
-      {/* X 軸標籤 */}
-      <View style={[barStyles.xLabelsRow, { width: chartWidth, left: 0, top: chartHeight - padding + 4 }]}> 
+      {/* X 軸標籤（單獨一排） */}
+      <View style={[barStyles.xLabelsRow, { width: chartWidth, left: 0, top: chartHeight }]}> 
         {mockChartData.map((d, i) => (
-          <Text key={i} style={barStyles.label}>{d.month}</Text>
+          <View key={i} style={{ width: groupSpace, alignItems: 'center' }}>
+            <Text style={barStyles.label}>{d.month}</Text>
+          </View>
         ))}
       </View>
     </View>
