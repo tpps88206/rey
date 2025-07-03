@@ -246,7 +246,7 @@ export default function AddRecordScreen() {
       {/* 選擇時間 */}
       <View style={styles.selectRow}>
         <Text style={styles.selectLabel}>時間</Text>
-        <TextInput style={.selectValueInput} value={time} onChangeText={setTime} placeholder="時間" placeholderTextColor="#888" />
+        <TextInput style={styles.selectValueInput} value={time} onChangeText={setTime} placeholder="時間" placeholderTextColor="#888" />
       </View>
       {/* 發票號碼 */}
       <View style={styles.selectRow}>
