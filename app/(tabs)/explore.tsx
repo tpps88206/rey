@@ -1,5 +1,6 @@
 import { FlatList, StyleSheet, Text, View } from 'react-native';
-import { VictoryAxis, VictoryBar, VictoryChart, VictoryGroup, VictoryLine, VictoryTheme } from 'victory-native';
+import { VictoryTheme } from 'victory';
+import { VictoryAxis, VictoryBar, VictoryChart, VictoryGroup, VictoryLine } from 'victory-native';
 
 interface Account {
   id: string;
