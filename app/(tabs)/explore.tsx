@@ -1,37 +1,37 @@
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import { useEffect, useState } from 'react';
 import { FlatList, StyleSheet, Text, View } from 'react-native';
 
-import { VictoryCombinedChart } from "@/components/VictoryCombinedChart";
+export default function AccountOverview() {
+  const [records, setRecords] = useState<any[]>([]);
 
-interface Account {
-  id: string;
-  name: string;
-  type: string;
-  balance: number;
-  icon: string;
-}
+  useEffect(() => {
+    const load = async () => {
+      const data = await AsyncStorage.getItem('records');
+      setRecords(data ? JSON.parse(data) : []);
+    };
+    load();
+  }, []);
 
-const mockAccounts: Account[] = [
-  { id: '1', name: '錢包', type: 'cash', balance: 1779, icon: 'wallet' },
-  { id: '2', name: '中國信託活存', type: 'bank', balance: 2329, icon: 'bank' },
-  { id: '3', name: '保留金', type: 'safe', balance: 60000, icon: 'safe' },
-  { id: '4', name: '元大銀行證券', type: 'stock', balance: 370000, icon: 'stock' },
-];
+  // 根據帳戶分類統計
+  const accounts = Array.from(new Set(records.map(r => r.account)));
 
-export default function ExploreScreen() {
   return (
     <View style={styles.container}>
       <Text style={styles.title}>帳戶總覽</Text>
-      {/* Victory 專業圖表 */}
-      <VictoryCombinedChart />
       <FlatList
-        data={mockAccounts}
-        keyExtractor={item => item.id}
-        renderItem={({ item }) => (
-          <View style={styles.accountItem}>
-            <Text style={{ color: '#fff', fontSize: 18 }}>{item.name}</Text>
-            <Text style={{ color: '#9F9', fontSize: 18 }}>{item.balance.toLocaleString()}</Text>
-          </View>
-        )}
+        data={accounts}
+        keyExtractor={item => item}
+        renderItem={({ item }) => {
+          const accRecords = records.filter(r => r.account === item);
+          const total = accRecords.reduce((sum, r) => sum + Number(r.amount || 0), 0);
+          return (
+            <View style={styles.accountItem}>
+              <Text style={{ color: '#fff', fontSize: 18 }}>{item}</Text>
+              <Text style={{ color: '#9F9', fontSize: 18 }}>{total.toLocaleString()}</Text>
+            </View>
+          );
+        }}
       />
     </View>
   );

@@ -1,7 +1,7 @@
 import Calendar from '@/components/Calendar';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useEffect, useState } from 'react';
 import { FlatList, StyleSheet, Text, View } from 'react-native';
-
 
 // 資料型別定義
 interface Account {
@@ -30,29 +30,17 @@ interface Record {
   note?: string;
 }
 
-// 假資料
-const mockAccounts: Account[] = [
-  { id: '1', name: '錢包', type: 'cash', balance: 1779, icon: 'wallet' },
-  { id: '2', name: '中國信託活存', type: 'bank', balance: 2329, icon: 'bank' },
-];
-const mockCategories: Category[] = [
-  { id: '1', name: '計程車', icon: 'car', color: '#4A90E2' },
-  { id: '2', name: '午餐', icon: 'burger', color: '#F5C16C' },
-  { id: '3', name: '飲料', icon: 'coffee', color: '#F5C16C' },
-];
-const mockRecords: Record[] = [
-  { id: '1', type: 'expense', amount: 153, categoryId: '1', accountId: '2', date: '2025-06-01', note: 'JCB 中國信託' },
-  { id: '2', type: 'expense', amount: 254, categoryId: '2', accountId: '2', date: '2025-06-01', note: 'JCB 中國信託' },
-  { id: '3', type: 'expense', amount: 179, categoryId: '3', accountId: '2', date: '2025-06-01', note: 'JCB 中國信託' },
-];
-
 export default function HomeScreen() {
-  const [records, setRecords] = useState<Record[]>([]);
+  const [records, setRecords] = useState<any[]>([]);
   const [selectedDate, setSelectedDate] = useState('2025-06-01');
 
   useEffect(() => {
-    setRecords(mockRecords);
-  }, []);
+    const load = async () => {
+      const data = await AsyncStorage.getItem('records');
+      setRecords(data ? JSON.parse(data) : []);
+    };
+    load();
+  }, [selectedDate]); // 每次切換日期都重新讀取
 
   // 過濾當天記錄
   const filtered = records.filter(r => r.date === selectedDate);
@@ -64,18 +52,17 @@ export default function HomeScreen() {
       {/* 當月統計區塊 */}
       <View style={styles.summaryBox}>
         <Text style={styles.summaryText}>TWD 每月統計</Text>
-        <Text style={styles.expenseText}>$586</Text>
-        <Text style={styles.incomeText}>$16,000</Text>
+        {/* 可根據 records 計算收支統計 */}
       </View>
       {/* 記錄列表 */}
       <FlatList
         data={filtered}
-        keyExtractor={item => item.id}
+        keyExtractor={(_, i) => i.toString()}
         renderItem={({ item }) => (
           <View style={styles.recordItem}>
-            <Text style={{ color: '#fff' }}>{mockCategories.find(c => c.id === item.categoryId)?.name}</Text>
-            <Text style={{ color: item.type === 'expense' ? '#F77' : '#9F9' }}>
-              {item.type === 'expense' ? '-' : '+'}${item.amount}
+            <Text style={{ color: '#fff' }}>{item.category}</Text>
+            <Text style={{ color: item.type === '支出' ? '#F77' : '#9F9' }}>
+              {item.type === '支出' ? '-' : '+'}${item.amount}
             </Text>
             <Text style={{ color: '#aaa', fontSize: 12 }}>{item.note}</Text>
           </View>

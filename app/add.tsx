@@ -174,8 +174,12 @@ export default function AddRecordScreen() {
 
   return (
     <ScrollView style={styles.container}>
-      {/* 右上角儲存按鈕 */}
-      <View style={{ flexDirection: 'row', justifyContent: 'flex-end', marginBottom: 8 }}>
+      {/* 上方返回與儲存按鈕同一行 */}
+      <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginBottom: 8 }}>
+        <TouchableOpacity onPress={() => router.back()} style={styles.backBtn}>
+          <Text style={styles.backBtnText}>✕</Text>
+        </TouchableOpacity>
+        <Text style={{ color: '#fff', fontSize: 20, fontWeight: 'bold' }}>新增記錄</Text>
         <TouchableOpacity onPress={handleSave} style={styles.saveBtn}>
           <Text style={styles.saveBtnText}>✔</Text>
         </TouchableOpacity>
@@ -242,7 +246,7 @@ export default function AddRecordScreen() {
       {/* 選擇時間 */}
       <View style={styles.selectRow}>
         <Text style={styles.selectLabel}>時間</Text>
-        <TextInput style={styles.selectValueInput} value={time} onChangeText={setTime} placeholder="時間" placeholderTextColor="#888" />
+        <TextInput style={.selectValueInput} value={time} onChangeText={setTime} placeholder="時間" placeholderTextColor="#888" />
       </View>
       {/* 發票號碼 */}
       <View style={styles.selectRow}>
@@ -308,6 +312,8 @@ const styles = StyleSheet.create({
   advTab: { paddingVertical: 8, paddingHorizontal: 18, borderRadius: 20, marginRight: 8 },
   advTabActive: { backgroundColor: '#2C3442' },
   advMethodBtn: { backgroundColor: '#2C3442', borderRadius: 8, padding: 10, marginTop: 8, alignItems: 'center' },
+  backBtn: { padding: 8, borderRadius: 8, backgroundColor: '#2C3442', marginLeft: 4 },
+  backBtnText: { color: '#fff', fontSize: 22 },
   saveBtn: { padding: 8, borderRadius: 8, backgroundColor: '#3578E5', marginRight: 4 },
   saveBtnText: { color: '#fff', fontSize: 22 },
 }); 
