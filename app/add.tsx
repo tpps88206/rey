@@ -1,6 +1,8 @@
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import * as ImagePicker from 'expo-image-picker';
+import { useRouter } from 'expo-router';
 import { useState } from 'react';
-import { Image, Modal, ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
+import { Alert, Image, Modal, ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
 
 const tabs = ['建議', '支出', '收入', '轉帳', '應收款項', '應付款項'];
 const categories = [
@@ -127,6 +129,7 @@ export default function AddRecordScreen() {
   const [random, setRandom] = useState('');
   const [tags, setTags] = useState('');
   const [note, setNote] = useState('');
+  const router = useRouter();
 
   // 圖片選擇
   const pickImage = async () => {
@@ -136,8 +139,47 @@ export default function AddRecordScreen() {
     }
   };
 
+  // 儲存紀錄
+  const handleSave = async () => {
+    const record = {
+      type: tabs[activeTab],
+      category: categories[selectedCat].name,
+      amount,
+      name,
+      img,
+      account,
+      project,
+      shop,
+      advMode,
+      advMethod,
+      date,
+      time,
+      invoice,
+      random,
+      tags,
+      note,
+      createdAt: Date.now(),
+    };
+    try {
+      const prev = await AsyncStorage.getItem('records');
+      const arr = prev ? JSON.parse(prev) : [];
+      arr.push(record);
+      await AsyncStorage.setItem('records', JSON.stringify(arr));
+      Alert.alert('已儲存', '記錄已儲存成功');
+      router.back();
+    } catch (e) {
+      Alert.alert('儲存失敗', '請稍後再試');
+    }
+  };
+
   return (
     <ScrollView style={styles.container}>
+      {/* 右上角儲存按鈕 */}
+      <View style={{ flexDirection: 'row', justifyContent: 'flex-end', marginBottom: 8 }}>
+        <TouchableOpacity onPress={handleSave} style={styles.saveBtn}>
+          <Text style={styles.saveBtnText}>✔</Text>
+        </TouchableOpacity>
+      </View>
       {/* 上方多分類 Tab */}
       <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.tabRow}>
         {tabs.map((tab, idx) => (
@@ -266,4 +308,6 @@ const styles = StyleSheet.create({
   advTab: { paddingVertical: 8, paddingHorizontal: 18, borderRadius: 20, marginRight: 8 },
   advTabActive: { backgroundColor: '#2C3442' },
   advMethodBtn: { backgroundColor: '#2C3442', borderRadius: 8, padding: 10, marginTop: 8, alignItems: 'center' },
+  saveBtn: { padding: 8, borderRadius: 8, backgroundColor: '#3578E5', marginRight: 4 },
+  saveBtnText: { color: '#fff', fontSize: 22 },
 }); 
