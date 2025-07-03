@@ -14,11 +14,11 @@ export const categories: Category[] = [
     name: '飲食', color: '#F5C16C', icon: 'utensils', children: [
       { name: '早餐', icon: 'coffee' },
       { name: '午餐', icon: 'hamburger' },
-      { name: '晚餐', icon: 'drumstick' },
-      { name: '點心', icon: 'pizza' },
-      { name: '飲料', icon: 'cup' },
-      { name: '酒類', icon: 'beer' },
-      { name: '水果', icon: 'banana' },
+      { name: '晚餐', icon: 'drumstick-bite' },
+      { name: '點心', icon: 'cookie-bite' },
+      { name: '飲料', icon: 'cocktail' },
+      { name: '酒類', icon: 'wine-glass-alt' },
+      { name: '水果', icon: 'apple-alt' },
     ]
   },
   {
@@ -38,18 +38,18 @@ export const categories: Category[] = [
     ]
   },
   {
-    name: '娛樂', color: '#A285D1', icon: 'microphone', children: [
+    name: '娛樂', color: '#A285D1', icon: 'theater-masks', children: [
       { name: '電影', icon: 'film' },
-      { name: '遊樂園', icon: 'castle' },
+      { name: '遊樂園', icon: 'landmark' },
       { name: '展覽', icon: 'university' },
       { name: '影音', icon: 'tv' },
       { name: '音樂', icon: 'music' },
       { name: '遊戲', icon: 'gamepad' },
       { name: '運動', icon: 'basketball-ball' },
-      { name: '博弈', icon: 'cards' },
+      { name: '博弈', icon: 'dice' },
       { name: '消遣', icon: 'smile' },
       { name: '健身', icon: 'dumbbell' },
-      { name: '夜店', icon: 'record-vinyl' },
+      { name: '夜店', icon: 'glass-martini-alt' },
     ]
   },
   {
@@ -58,40 +58,40 @@ export const categories: Category[] = [
       { name: '衣物', icon: 'tshirt' },
       { name: '鞋子', icon: 'shoe-prints' },
       { name: '配件', icon: 'glasses' },
-      { name: '包包', icon: 'briefcase' },
-      { name: '美妝保養', icon: 'lipstick' },
+      { name: '包包', icon: 'shopping-bag' },
+      { name: '美妝保養', icon: 'spa' },
       { name: '精品', icon: 'gem' },
       { name: '禮物', icon: 'gift' },
       { name: '電子產品', icon: 'laptop' },
       { name: '書籍', icon: 'book' },
-      { name: '應用軟體', icon: 'download' },
-      { name: '賽車用品', icon: 'duck' },
+      { name: '應用軟體', icon: 'mobile-alt' },
+      { name: '賽車用品', icon: 'car-side' },
     ]
   },
   {
     name: '個人', color: '#BDBDBD', icon: 'user', children: [
       { name: '社交', icon: 'handshake' },
-      { name: '通話費', icon: 'mobile-alt' },
-      { name: '借款', icon: 'coins' },
+      { name: '通話費', icon: 'phone' },
+      { name: '借款', icon: 'hand-holding-usd' },
       { name: '投資', icon: 'chart-line' },
-      { name: '稅金', icon: 'coins' },
+      { name: '稅金', icon: 'file-invoice-dollar' },
       { name: '保險', icon: 'shield-alt' },
       { name: '捐款', icon: 'donate' },
       { name: '寵物', icon: 'dog' },
       { name: '彩券', icon: 'ticket-alt' },
-      { name: '手續費', icon: 'dollar-sign' },
+      { name: '手續費', icon: 'receipt' },
     ]
   },
   {
     name: '醫療', color: '#F44336', icon: 'hospital', children: [
       { name: '門診', icon: 'stethoscope' },
       { name: '牙齒保健', icon: 'tooth' },
-      { name: '藥品', icon: 'capsules' },
+      { name: '藥品', icon: 'pills' },
       { name: '醫療用品', icon: 'band-aid' },
       { name: '打針', icon: 'syringe' },
       { name: '住院', icon: 'procedures' },
-      { name: '手術', icon: 'scalpel' },
-      { name: '健康檢查', icon: 'x-ray' },
+      { name: '手術', icon: 'user-md' },
+      { name: '健康檢查', icon: 'heartbeat' },
     ]
   },
   {
@@ -101,21 +101,21 @@ export const categories: Category[] = [
       { name: '電費', icon: 'bolt' },
       { name: '燃料費', icon: 'gas-pump' },
       { name: '電話費', icon: 'phone' },
-      { name: '網路費', icon: 'globe' },
-      { name: '房租', icon: 'money-bill' },
+      { name: '網路費', icon: 'wifi' },
+      { name: '房租', icon: 'money-bill-wave' },
       { name: '洗衣費', icon: 'tshirt' },
       { name: '修繕費', icon: 'tools' },
       { name: '家具', icon: 'couch' },
       { name: '訂閱', icon: 'newspaper' },
       { name: '家電', icon: 'tv' },
-      { name: '家用', icon: 'duck' },
-      { name: '房貸', icon: 'money-check' },
-      { name: '裝潢', icon: 'building' },
+      { name: '家用', icon: 'box-open' },
+      { name: '房貸', icon: 'file-invoice' },
+      { name: '裝潢', icon: 'paint-roller' },
     ]
   },
   {
     name: '家庭', color: '#E1BEE7', icon: 'child', children: [
-      { name: '生活費', icon: 'baby-bottle' },
+      { name: '生活費', icon: 'baby' },
       { name: '教育', icon: 'graduation-cap' },
       { name: '看護', icon: 'user-nurse' },
       { name: '玩具', icon: 'puzzle-piece' },
@@ -124,7 +124,7 @@ export const categories: Category[] = [
     ]
   },
   {
-    name: '生活', color: '#8BC34A', icon: 'spa', children: [
+    name: '生活', color: '#8BC34A', icon: 'leaf', children: [
       { name: '美容美髮', icon: 'spa' },
       { name: '泡湯', icon: 'hot-tub' },
       { name: '按摩', icon: 'spa' },
