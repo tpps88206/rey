@@ -1,61 +1,97 @@
-import { Image } from 'expo-image';
-import { Platform, StyleSheet } from 'react-native';
+import { useEffect, useState } from 'react';
+import { FlatList, StyleSheet, Text, View } from 'react-native';
 
-import { HelloWave } from '@/components/HelloWave';
-import ParallaxScrollView from '@/components/ParallaxScrollView';
-import { ThemedText } from '@/components/ThemedText';
-import { ThemedView } from '@/components/ThemedView';
+
+// 資料型別定義
+interface Account {
+  id: string;
+  name: string;
+  type: string;
+  balance: number;
+  icon: string;
+}
+
+interface Category {
+  id: string;
+  name: string;
+  icon: string;
+  color: string;
+}
+
+interface Record {
+  id: string;
+  type: 'expense' | 'income' | 'transfer' | 'receivable' | 'payable';
+  amount: number;
+  categoryId: string;
+  accountId: string;
+  projectId?: string;
+  date: string;
+  note?: string;
+}
+
+// 假資料
+const mockAccounts: Account[] = [
+  { id: '1', name: '錢包', type: 'cash', balance: 1779, icon: 'wallet' },
+  { id: '2', name: '中國信託活存', type: 'bank', balance: 2329, icon: 'bank' },
+];
+const mockCategories: Category[] = [
+  { id: '1', name: '計程車', icon: 'car', color: '#4A90E2' },
+  { id: '2', name: '午餐', icon: 'burger', color: '#F5C16C' },
+  { id: '3', name: '飲料', icon: 'coffee', color: '#F5C16C' },
+];
+const mockRecords: Record[] = [
+  { id: '1', type: 'expense', amount: 153, categoryId: '1', accountId: '2', date: '2025-06-01', note: 'JCB 中國信託' },
+  { id: '2', type: 'expense', amount: 254, categoryId: '2', accountId: '2', date: '2025-06-01', note: 'JCB 中國信託' },
+  { id: '3', type: 'expense', amount: 179, categoryId: '3', accountId: '2', date: '2025-06-01', note: 'JCB 中國信託' },
+];
 
 export default function HomeScreen() {
+  const [records, setRecords] = useState<Record[]>([]);
+
+  useEffect(() => {
+    // 先用假資料
+    setRecords(mockRecords);
+  }, []);
+
   return (
-    <ParallaxScrollView
-      headerBackgroundColor={{ light: '#A1CEDC', dark: '#1D3D47' }}
-      headerImage={
-        <Image
-          source={require('@/assets/images/partial-react-logo.png')}
-          style={styles.reactLogo}
-        />
-      }>
-      <ThemedView style={styles.titleContainer}>
-        <ThemedText type="title">Welcome!</ThemedText>
-        <HelloWave />
-      </ThemedView>
-      <ThemedView style={styles.stepContainer}>
-        <ThemedText type="subtitle">Step 1: Try it</ThemedText>
-        <ThemedText>
-          Edit <ThemedText type="defaultSemiBold">app/(tabs)/index.tsx</ThemedText> to see changes.
-          Press{' '}
-          <ThemedText type="defaultSemiBold">
-            {Platform.select({
-              ios: 'cmd + d',
-              android: 'cmd + m',
-              web: 'F12',
-            })}
-          </ThemedText>{' '}
-          to open developer tools.
-        </ThemedText>
-      </ThemedView>
-      <ThemedView style={styles.stepContainer}>
-        <ThemedText type="subtitle">Step 2: Explore</ThemedText>
-        <ThemedText>
-          {`Tap the Explore tab to learn more about what's included in this starter app.`}
-        </ThemedText>
-      </ThemedView>
-      <ThemedView style={styles.stepContainer}>
-        <ThemedText type="subtitle">Step 3: Get a fresh start</ThemedText>
-        <ThemedText>
-          {`When you're ready, run `}
-          <ThemedText type="defaultSemiBold">npm run reset-project</ThemedText> to get a fresh{' '}
-          <ThemedText type="defaultSemiBold">app</ThemedText> directory. This will move the current{' '}
-          <ThemedText type="defaultSemiBold">app</ThemedText> to{' '}
-          <ThemedText type="defaultSemiBold">app-example</ThemedText>.
-        </ThemedText>
-      </ThemedView>
-    </ParallaxScrollView>
+    <View style={styles.container}>
+      {/* 日曆區塊（之後可替換成元件） */}
+      <View style={styles.calendarBox}>
+        <Text style={styles.dateText}>2025/6/1</Text>
+      </View>
+      {/* 當月統計區塊 */}
+      <View style={styles.summaryBox}>
+        <Text style={styles.summaryText}>TWD 每月統計</Text>
+        <Text style={styles.expenseText}>$586</Text>
+        <Text style={styles.incomeText}>$16,000</Text>
+      </View>
+      {/* 記錄列表 */}
+      <FlatList
+        data={records}
+        keyExtractor={item => item.id}
+        renderItem={({ item }) => (
+          <View style={styles.recordItem}>
+            <Text style={{ color: '#fff' }}>{mockCategories.find(c => c.id === item.categoryId)?.name}</Text>
+            <Text style={{ color: item.type === 'expense' ? '#F77' : '#9F9' }}>
+              {item.type === 'expense' ? '-' : '+'}${item.amount}
+            </Text>
+            <Text style={{ color: '#aaa', fontSize: 12 }}>{item.note}</Text>
+          </View>
+        )}
+      />
+    </View>
   );
 }
 
 const styles = StyleSheet.create({
+  container: { flex: 1, backgroundColor: '#232936', padding: 10 },
+  calendarBox: { padding: 10, alignItems: 'center' },
+  dateText: { color: '#fff', fontSize: 24 },
+  summaryBox: { backgroundColor: '#222', borderRadius: 10, padding: 16, marginVertical: 10 },
+  summaryText: { color: '#fff', fontSize: 18 },
+  expenseText: { color: '#F77', fontSize: 16 },
+  incomeText: { color: '#9F9', fontSize: 16 },
+  recordItem: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', backgroundColor: '#2C3442', borderRadius: 8, padding: 12, marginVertical: 4 },
   titleContainer: {
     flexDirection: 'row',
     alignItems: 'center',
