@@ -1,5 +1,6 @@
+import * as ImagePicker from 'expo-image-picker';
 import { useState } from 'react';
-import { Modal, ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
+import { Image, Modal, ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
 
 const tabs = ['建議', '支出', '收入', '轉帳', '應收款項', '應付款項'];
 const categories = [
@@ -14,6 +15,8 @@ const categories = [
   { name: '禮物', color: '#F48FB1' },
   { name: '代墊', color: '#B39DDB' },
 ];
+const accounts = ['錢包', '中國信託活存', '保留金', '元大銀行證券'];
+const projects = ['TWD 每月統計', '生活', '家用', '結婚'];
 
 function NumberPad({ visible, value, onChange, onClose }: { visible: boolean, value: string, onChange: (v: string) => void, onClose: () => void }) {
   const keys = [
@@ -54,15 +57,87 @@ function NumberPad({ visible, value, onChange, onClose }: { visible: boolean, va
   );
 }
 
+function PickerModal({ visible, options, value, onSelect, onClose, title }: { visible: boolean, options: string[], value: string, onSelect: (v: string) => void, onClose: () => void, title: string }) {
+  return (
+    <Modal visible={visible} transparent animationType="fade">
+      <View style={styles.modalOverlay}>
+        <View style={styles.modalBox}>
+          <Text style={styles.modalTitle}>{title}</Text>
+          <ScrollView>
+            {options.map(opt => (
+              <TouchableOpacity key={opt} style={styles.modalOption} onPress={() => { onSelect(opt); onClose(); }}>
+                <Text style={{ color: value === opt ? '#3578E5' : '#fff', fontSize: 18 }}>{opt}</Text>
+              </TouchableOpacity>
+            ))}
+          </ScrollView>
+          <TouchableOpacity style={styles.modalCancel} onPress={onClose}><Text style={{ color: '#fff' }}>取消</Text></TouchableOpacity>
+        </View>
+      </View>
+    </Modal>
+  );
+}
+
+function AdvancedPayModal({ visible, mode, setMode, method, setMethod, onClose }: any) {
+  const tabs = ['單次', '週期', '分期'];
+  return (
+    <Modal visible={visible} transparent animationType="fade">
+      <View style={styles.modalOverlay}>
+        <View style={styles.advBox}>
+          <Text style={styles.modalTitle}>進階設定</Text>
+          <View style={styles.advTabRow}>
+            {tabs.map((t, i) => (
+              <TouchableOpacity key={t} style={[styles.advTab, mode === i && styles.advTabActive]} onPress={() => setMode(i)}>
+                <Text style={{ color: mode === i ? '#3578E5' : '#fff', fontSize: 16 }}>{t}</Text>
+              </TouchableOpacity>
+            ))}
+          </View>
+          <View style={{ marginTop: 16 }}>
+            <Text style={{ color: '#fff', fontSize: 16 }}>入帳方式</Text>
+            <TouchableOpacity style={styles.advMethodBtn} onPress={() => setMethod('立即入帳')}><Text style={{ color: method === '立即入帳' ? '#3578E5' : '#fff' }}>立即入帳</Text></TouchableOpacity>
+            <TouchableOpacity style={styles.advMethodBtn} onPress={() => setMethod('延後入帳')}><Text style={{ color: method === '延後入帳' ? '#3578E5' : '#fff' }}>延後入帳</Text></TouchableOpacity>
+          </View>
+          <View style={{ flexDirection: 'row', marginTop: 24 }}>
+            <TouchableOpacity style={styles.modalCancel} onPress={onClose}><Text style={{ color: '#fff' }}>取消</Text></TouchableOpacity>
+            <TouchableOpacity style={styles.modalOk} onPress={onClose}><Text style={{ color: '#3578E5' }}>確定</Text></TouchableOpacity>
+          </View>
+        </View>
+      </View>
+    </Modal>
+  );
+}
+
 export default function AddRecordScreen() {
   const [activeTab, setActiveTab] = useState(0);
   const [amount, setAmount] = useState('');
   const [padVisible, setPadVisible] = useState(false);
   const [selectedCat, setSelectedCat] = useState(0);
   const [name, setName] = useState('');
+  const [img, setImg] = useState<string | null>(null);
+  const [account, setAccount] = useState(accounts[0]);
+  const [accountPicker, setAccountPicker] = useState(false);
+  const [project, setProject] = useState(projects[0]);
+  const [projectPicker, setProjectPicker] = useState(false);
+  const [shop, setShop] = useState('');
+  const [advVisible, setAdvVisible] = useState(false);
+  const [advMode, setAdvMode] = useState(0);
+  const [advMethod, setAdvMethod] = useState('立即入帳');
+  const [date, setDate] = useState('2025/06/01');
+  const [time, setTime] = useState('12:05');
+  const [invoice, setInvoice] = useState('');
+  const [random, setRandom] = useState('');
+  const [tags, setTags] = useState('');
+  const [note, setNote] = useState('');
+
+  // 圖片選擇
+  const pickImage = async () => {
+    let result = await ImagePicker.launchImageLibraryAsync({ mediaTypes: ImagePicker.MediaTypeOptions.Images, quality: 0.7 });
+    if (!result.canceled && result.assets && result.assets.length > 0) {
+      setImg(result.assets[0].uri);
+    }
+  };
 
   return (
-    <View style={styles.container}>
+    <ScrollView style={styles.container}>
       {/* 上方多分類 Tab */}
       <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.tabRow}>
         {tabs.map((tab, idx) => (
@@ -83,11 +158,12 @@ export default function AddRecordScreen() {
       <TouchableOpacity style={styles.amountBox} onPress={() => setPadVisible(true)}>
         <Text style={styles.amountLabel}>TWD</Text>
         <Text style={styles.amountText}>{amount || '0'}</Text>
-        <Text style={styles.amountPlus}>＋</Text>
       </TouchableOpacity>
-      {/* 其他欄位 */}
+      {/* 插入圖片、名稱 */}
       <View style={styles.row}>
-        <TouchableOpacity style={styles.imgBtn}><Text style={{ color: '#888' }}>📷</Text></TouchableOpacity>
+        <TouchableOpacity style={styles.imgBtn} onPress={pickImage}>
+          {img ? <Image source={{ uri: img }} style={{ width: 36, height: 36, borderRadius: 8 }} /> : <Text style={{ color: '#888' }}>📷</Text>}
+        </TouchableOpacity>
         <TextInput
           style={styles.nameInput}
           value={name}
@@ -96,9 +172,62 @@ export default function AddRecordScreen() {
           placeholderTextColor="#888"
         />
       </View>
-      {/* 其他欄位可依需求繼續擴充... */}
+      {/* 選擇帳戶 */}
+      <TouchableOpacity style={styles.selectRow} onPress={() => setAccountPicker(true)}>
+        <Text style={styles.selectLabel}>帳戶</Text>
+        <Text style={styles.selectValue}>{account}</Text>
+      </TouchableOpacity>
+      {/* 選擇專案 */}
+      <TouchableOpacity style={styles.selectRow} onPress={() => setProjectPicker(true)}>
+        <Text style={styles.selectLabel}>專案</Text>
+        <Text style={styles.selectValue}>{project}</Text>
+      </TouchableOpacity>
+      {/* 輸入商家 */}
+      <View style={styles.selectRow}>
+        <Text style={styles.selectLabel}>商家</Text>
+        <TextInput style={styles.selectValueInput} value={shop} onChangeText={setShop} placeholder="商家" placeholderTextColor="#888" />
+      </View>
+      {/* 進階付款模式 */}
+      <TouchableOpacity style={styles.selectRow} onPress={() => setAdvVisible(true)}>
+        <Text style={styles.selectLabel}>進階付款</Text>
+        <Text style={styles.selectValue}>{['單次', '週期', '分期'][advMode]}・{advMethod}</Text>
+      </TouchableOpacity>
+      {/* 選擇日期 */}
+      <View style={styles.selectRow}>
+        <Text style={styles.selectLabel}>日期</Text>
+        <TextInput style={styles.selectValueInput} value={date} onChangeText={setDate} placeholder="日期" placeholderTextColor="#888" />
+      </View>
+      {/* 選擇時間 */}
+      <View style={styles.selectRow}>
+        <Text style={styles.selectLabel}>時間</Text>
+        <TextInput style={styles.selectValueInput} value={time} onChangeText={setTime} placeholder="時間" placeholderTextColor="#888" />
+      </View>
+      {/* 發票號碼 */}
+      <View style={styles.selectRow}>
+        <Text style={styles.selectLabel}>發票號碼</Text>
+        <TextInput style={styles.selectValueInput} value={invoice} onChangeText={setInvoice} placeholder="發票號碼" placeholderTextColor="#888" />
+      </View>
+      {/* 隨機碼 */}
+      <View style={styles.selectRow}>
+        <Text style={styles.selectLabel}>隨機碼</Text>
+        <TextInput style={styles.selectValueInput} value={random} onChangeText={setRandom} placeholder="隨機碼" placeholderTextColor="#888" />
+      </View>
+      {/* 標籤 */}
+      <View style={styles.selectRow}>
+        <Text style={styles.selectLabel}>標籤</Text>
+        <TextInput style={styles.selectValueInput} value={tags} onChangeText={setTags} placeholder="標籤" placeholderTextColor="#888" />
+      </View>
+      {/* 備註 */}
+      <View style={styles.selectRow}>
+        <Text style={styles.selectLabel}>備註</Text>
+        <TextInput style={styles.selectValueInput} value={note} onChangeText={setNote} placeholder="備註" placeholderTextColor="#888" />
+      </View>
+      {/* Picker Modal */}
+      <PickerModal visible={accountPicker} options={accounts} value={account} onSelect={setAccount} onClose={() => setAccountPicker(false)} title="選擇帳戶" />
+      <PickerModal visible={projectPicker} options={projects} value={project} onSelect={setProject} onClose={() => setProjectPicker(false)} title="選擇專案" />
+      <AdvancedPayModal visible={advVisible} mode={advMode} setMode={setAdvMode} method={advMethod} setMethod={setAdvMethod} onClose={() => setAdvVisible(false)} />
       <NumberPad visible={padVisible} value={amount} onChange={setAmount} onClose={() => setPadVisible(false)} />
-    </View>
+    </ScrollView>
   );
 }
 
@@ -112,10 +241,13 @@ const styles = StyleSheet.create({
   amountBox: { flexDirection: 'row', alignItems: 'center', backgroundColor: '#2C3442', borderRadius: 10, padding: 16, marginBottom: 16 },
   amountLabel: { color: '#fff', fontSize: 18, marginRight: 8 },
   amountText: { color: '#fff', fontSize: 32, flex: 1 },
-  amountPlus: { color: '#3578E5', fontSize: 28, marginLeft: 8 },
   row: { flexDirection: 'row', alignItems: 'center', marginBottom: 12 },
   imgBtn: { width: 40, height: 40, borderRadius: 8, backgroundColor: '#2C3442', alignItems: 'center', justifyContent: 'center', marginRight: 8 },
   nameInput: { flex: 1, backgroundColor: '#2C3442', borderRadius: 8, color: '#fff', fontSize: 18, paddingHorizontal: 12, height: 40 },
+  selectRow: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', backgroundColor: '#2C3442', borderRadius: 8, paddingHorizontal: 12, height: 44, marginBottom: 10 },
+  selectLabel: { color: '#fff', fontSize: 16 },
+  selectValue: { color: '#fff', fontSize: 16 },
+  selectValueInput: { color: '#fff', fontSize: 16, flex: 1, paddingLeft: 8 },
   padOverlay: { flex: 1, backgroundColor: 'rgba(0,0,0,0.4)', justifyContent: 'flex-end' },
   padBox: { backgroundColor: '#232936', padding: 12, borderTopLeftRadius: 16, borderTopRightRadius: 16 },
   padRow: { flexDirection: 'row', justifyContent: 'space-between', marginBottom: 8 },
@@ -123,4 +255,15 @@ const styles = StyleSheet.create({
   padKeyText: { color: '#fff', fontSize: 28 },
   padKeyOk: { backgroundColor: '#3578E5' },
   padKeyOkText: { color: '#fff' },
+  modalOverlay: { flex: 1, backgroundColor: 'rgba(0,0,0,0.5)', justifyContent: 'center', alignItems: 'center' },
+  modalBox: { backgroundColor: '#232936', borderRadius: 16, padding: 24, width: 300, alignItems: 'center' },
+  modalTitle: { color: '#fff', fontSize: 20, marginBottom: 16 },
+  modalOption: { paddingVertical: 12, alignItems: 'center' },
+  modalCancel: { marginTop: 16, backgroundColor: '#2C3442', borderRadius: 8, paddingVertical: 10, paddingHorizontal: 32 },
+  modalOk: { marginTop: 16, backgroundColor: '#fff', borderRadius: 8, paddingVertical: 10, paddingHorizontal: 32 },
+  advBox: { backgroundColor: '#232936', borderRadius: 16, padding: 24, width: 320, alignItems: 'center' },
+  advTabRow: { flexDirection: 'row', marginBottom: 12 },
+  advTab: { paddingVertical: 8, paddingHorizontal: 18, borderRadius: 20, marginRight: 8 },
+  advTabActive: { backgroundColor: '#2C3442' },
+  advMethodBtn: { backgroundColor: '#2C3442', borderRadius: 8, padding: 10, marginTop: 8, alignItems: 'center' },
 }); 
