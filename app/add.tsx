@@ -1,3 +1,5 @@
+import CategorySelector from '@/components/CategorySelector';
+import { categories } from '@/constants/Categories';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useNavigation } from '@react-navigation/native';
 import * as ImagePicker from 'expo-image-picker';
@@ -6,18 +8,6 @@ import { useLayoutEffect, useState } from 'react';
 import { Alert, Image, Modal, ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
 
 const tabs = ['建議', '支出', '收入', '轉帳', '應收款項', '應付款項'];
-const categories = [
-  { name: '公車', color: '#4A90E2' },
-  { name: '早餐', color: '#F5C16C' },
-  { name: '飲料', color: '#F5C16C' },
-  { name: '計程車', color: '#4A90E2' },
-  { name: '代墊', color: '#B39DDB' },
-  { name: '獎金', color: '#BCA16C' },
-  { name: '日常用品', color: '#607D8B' },
-  { name: '保險', color: '#BDBDBD' },
-  { name: '禮物', color: '#F48FB1' },
-  { name: '代墊', color: '#B39DDB' },
-];
 const accounts = ['錢包', '中國信託活存', '保留金', '元大銀行證券'];
 const projects = ['TWD 每月統計', '生活', '家用', '結婚'];
 
@@ -113,7 +103,8 @@ export default function AddRecordScreen() {
   const [activeTab, setActiveTab] = useState(0);
   const [amount, setAmount] = useState('');
   const [padVisible, setPadVisible] = useState(false);
-  const [selectedCat, setSelectedCat] = useState(0);
+  const [selectedCategory, setSelectedCategory] = useState(0);
+  const [selectedSub, setSelectedSub] = useState(0);
   const [name, setName] = useState('');
   const [img, setImg] = useState<string | null>(null);
   const [account, setAccount] = useState(accounts[0]);
@@ -145,7 +136,8 @@ export default function AddRecordScreen() {
   const handleSave = async () => {
     const record = {
       type: tabs[activeTab],
-      category: categories[selectedCat].name,
+      category: categories[selectedCategory].name,
+      subCategory: categories[selectedCategory].children[selectedSub].name,
       amount,
       name,
       img,
@@ -195,13 +187,13 @@ export default function AddRecordScreen() {
         ))}
       </ScrollView>
       {/* 分類 icon 選擇區 */}
-      <View style={styles.catRow}>
-        {categories.map((cat, idx) => (
-          <TouchableOpacity key={cat.name + idx} style={[styles.catCircle, { backgroundColor: cat.color, borderWidth: selectedCat === idx ? 3 : 0, borderColor: '#3578E5' }]} onPress={() => setSelectedCat(idx)}>
-            <Text style={{ color: '#fff', fontSize: 20 }}>{cat.name[0]}</Text>
-          </TouchableOpacity>
-        ))}
-      </View>
+      <CategorySelector
+        categories={categories}
+        selectedCategory={selectedCategory}
+        selectedSub={selectedSub}
+        onCategorySelect={setSelectedCategory}
+        onSubSelect={setSelectedSub}
+      />
       {/* 金額輸入區 */}
       <TouchableOpacity style={styles.amountBox} onPress={() => setPadVisible(true)}>
         <Text style={styles.amountLabel}>TWD</Text>
