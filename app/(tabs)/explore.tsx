@@ -1,4 +1,7 @@
+import * as scale from 'd3-scale';
 import { FlatList, StyleSheet, Text, View } from 'react-native';
+import { G, Rect } from 'react-native-svg';
+import { BarChart, LineChart, XAxis } from 'react-native-svg-charts';
 
 interface Account {
   id: string;
@@ -27,77 +30,70 @@ const mockChartData = [
   { month: '6月', income: 170000, expense: 140000, total: 800000 },
 ];
 
-function CombinedChart() {
+function CombinedSVGChart() {
   const chartHeight = 120;
-  const chartWidth = 320;
-  const padding = 24;
-  const barWidth = 10;
-  const barGap = 4;
-  const n = mockChartData.length;
-  const maxTotal = Math.max(...mockChartData.map(d => d.total));
-  const maxBar = Math.max(...mockChartData.map(d => Math.max(d.income, d.expense)));
-  // 平均分配每個月的 group 寬度
-  const groupSpace = (chartWidth - 2 * padding) / n;
-  // 折線點位
-  const points = mockChartData.map((d, i) => {
-    const x = padding + groupSpace * (i + 0.5);
-    const y = padding + (chartHeight - 2 * padding) * (1 - d.total / maxTotal);
-    return { x, y };
-  });
+  const chartWidth = 340;
+  const incomeData = mockChartData.map(d => d.income);
+  const expenseData = mockChartData.map(d => d.expense);
+  const totalData = mockChartData.map(d => d.total);
+  const months = mockChartData.map(d => d.month);
+  const contentInset = { top: 16, bottom: 16 };
+
+  // 疊加兩組 BarChart
   return (
-    <View style={[barStyles.combinedChartBox, { height: chartHeight + 24 }]}> 
-      {/* 長條圖 */}
-      <View style={[barStyles.barRow, { height: chartHeight - padding }]}> 
-        {mockChartData.map((d, i) => {
-          const groupX = padding + groupSpace * (i + 0.5) - barWidth - barGap / 2;
-          const incomeH = (chartHeight - 2 * padding) * d.income / maxBar;
-          const expenseH = (chartHeight - 2 * padding) * d.expense / maxBar;
-          return (
-            <View key={i} style={[barStyles.barGroup, { left: groupX, bottom: 0, width: barWidth * 2 + barGap }]}> 
-              <View style={[barStyles.bar, { height: incomeH, backgroundColor: '#9F9', width: barWidth, marginRight: barGap }]} />
-              <View style={[barStyles.bar, { height: expenseH, backgroundColor: '#F77', width: barWidth }]} />
-            </View>
-          );
-        })}
-      </View>
-      {/* 折線圖 */}
-      {points.map((pt, i) =>
-        i > 0 ? (
-          <View
-            key={i}
-            style={[
-              barStyles.line,
-              {
-                left: points[i - 1].x,
-                top: points[i - 1].y,
-                width: Math.hypot(points[i].x - points[i - 1].x, points[i].y - points[i - 1].y),
-                transform: [
-                  { rotateZ: `${Math.atan2(points[i].y - points[i - 1].y, points[i].x - points[i - 1].x)}rad` },
-                ],
-              },
-            ]}
-          />
-        ) : null
-      )}
-      {/* 折線資料點 */}
-      {points.map((pt, i) => (
-        <View
-          key={i}
-          style={[
-            barStyles.dot,
-            { left: pt.x - 5, top: pt.y - 5 },
-          ]}
-        />
-      ))}
-      {/* X 軸標籤（單獨一排） */}
-      <View style={[barStyles.xLabelsRow, { width: chartWidth, left: 0, top: chartHeight }]}> 
-        {mockChartData.map((d, i) => (
-          <View key={i} style={{ width: groupSpace, alignItems: 'center' }}>
-            <Text style={barStyles.label}>{d.month}</Text>
-          </View>
-        ))}
-      </View>
-    </View>
+    <>
+      <BarChart
+        style={{ height: chartHeight, width: chartWidth, position: 'absolute' }}
+        data={incomeData}
+        svg={{ fill: '#9F9' }}
+        spacingInner={0.4}
+        contentInset={contentInset}
+        yAccessor={({ item }) => item}
+        gridMin={0}
+      />
+      <BarChart
+        style={{ height: chartHeight, width: chartWidth }}
+        data={expenseData}
+        svg={{ fill: '#F77' }}
+        spacingInner={0.4}
+        contentInset={contentInset}
+        yAccessor={({ item }) => item}
+        gridMin={0}
+      >
+        {/* 疊加折線圖 */}
+        <LineChart
+          style={{ height: chartHeight, width: chartWidth }}
+          data={totalData}
+          svg={{ stroke: '#4A90E2', strokeWidth: 2 }}
+          contentInset={contentInset}
+          yMin={0}
+        >
+          {/* 資料點 */}
+          {({ line }) => (
+            <G>
+              {totalData.map((value, index) => {
+                const x = (chartWidth / (totalData.length - 1)) * index;
+                const y = line.y(value);
+                return (
+                  <G key={index}>
+                    <Rect x={x - 5} y={y - 5} width={10} height={10} rx={5} fill="#4A90E2" />
+                  </G>
+                );
+              })}
+            </G>
+          )}
+        </LineChart>
+      </BarChart>
+      {/* X 軸月份標籤 */}
+      <XAxis
+        style={{ marginTop: 4, width: chartWidth, alignSelf: 'center' }}
+        data={months}
+        formatLabel={(_, i) => months[i]}
+        contentInset={{ left: 20, right: 20 }}
+        svg={{ fontSize: 12, fill: '#aaa' }}
+        scale={scale.scaleBand}
+      />
+    </>
   );
 }
 
@@ -116,8 +112,10 @@ export default function AccountOverview() {
   return (
     <View style={styles.container}>
       <Text style={styles.title}>帳戶總覽</Text>
-      {/* 折線圖+長條圖 */}
-      <CombinedChart />
+      {/* SVG 專業圖表 */}
+      <View style={{ alignItems: 'center', marginBottom: 16 }}>
+        <CombinedSVGChart />
+      </View>
       <FlatList
         data={mockAccounts}
         keyExtractor={item => item.id}
