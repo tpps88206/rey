@@ -1,6 +1,6 @@
 import { FontAwesome5 } from '@expo/vector-icons';
 import { useState } from 'react';
-import { Dimensions, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 
 export interface CategoryChild {
   name: string;
@@ -21,9 +21,8 @@ interface Props {
   onSubSelect: (idx: number) => void;
 }
 
-const ITEM_PER_ROW = 4;
-const GAP = 12;
-const ITEM_SIZE = Math.floor((Dimensions.get('window').width - GAP * (ITEM_PER_ROW + 1)) / ITEM_PER_ROW);
+const GAP = 10;
+const MIN_ITEM_SIZE = 64;
 
 export default function CategorySelector({ categories, selectedCategory, selectedSub, onCategorySelect, onSubSelect }: Props) {
   const [showSub, setShowSub] = useState(false);
@@ -38,7 +37,7 @@ export default function CategorySelector({ categories, selectedCategory, selecte
             key={cat.name}
             style={[
               styles.gridItem,
-              { width: ITEM_SIZE, height: ITEM_SIZE + 24, marginLeft: idx % ITEM_PER_ROW === 0 ? 0 : GAP },
+              { backgroundColor: 'transparent' },
             ]}
             onPress={() => {
               onCategorySelect(idx);
@@ -70,7 +69,7 @@ export default function CategorySelector({ categories, selectedCategory, selecte
             key={sub.name}
             style={[
               styles.gridItem,
-              { width: ITEM_SIZE, height: ITEM_SIZE + 24, marginLeft: idx % ITEM_PER_ROW === 0 ? 0 : GAP },
+              { backgroundColor: 'transparent' },
             ]}
             onPress={() => {
               onSubSelect(idx);
@@ -95,15 +94,21 @@ const styles = StyleSheet.create({
     flexWrap: 'wrap',
     marginBottom: 8,
     marginTop: 8,
+    justifyContent: 'flex-start',
   },
   gridItem: {
     alignItems: 'center',
     marginBottom: GAP,
+    marginRight: GAP,
+    flexBasis: 'auto',
+    flexGrow: 1,
+    minWidth: MIN_ITEM_SIZE,
+    maxWidth: 90,
   },
   iconCircle: {
-    width: 56,
-    height: 56,
-    borderRadius: 28,
+    width: 48,
+    height: 48,
+    borderRadius: 24,
     alignItems: 'center',
     justifyContent: 'center',
     marginBottom: 6,
@@ -111,7 +116,7 @@ const styles = StyleSheet.create({
   },
   gridText: {
     color: '#fff',
-    fontSize: 15,
+    fontSize: 14,
     textAlign: 'center',
   },
   backBtn: { flexDirection: 'row', alignItems: 'center', marginBottom: 12, marginLeft: 4 },
