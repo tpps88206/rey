@@ -1,7 +1,5 @@
-import * as scale from 'd3-scale';
 import { FlatList, StyleSheet, Text, View } from 'react-native';
-import { G, Rect } from 'react-native-svg';
-import { BarChart, LineChart, XAxis } from 'react-native-svg-charts';
+import { VictoryAxis, VictoryBar, VictoryChart, VictoryGroup, VictoryLine, VictoryTheme } from 'victory-native';
 
 interface Account {
   id: string;
@@ -18,7 +16,7 @@ const mockAccounts: Account[] = [
   { id: '4', name: '元大銀行證券', type: 'stock', balance: 370000, icon: 'stock' },
 ];
 
-const mockChartData = [
+const chartData = [
   { month: '10月', income: 120000, expense: 90000, total: 200000 },
   { month: '11月', income: 100000, expense: 95000, total: 210000 },
   { month: '12月', income: 110000, expense: 100000, total: 220000 },
@@ -30,70 +28,61 @@ const mockChartData = [
   { month: '6月', income: 170000, expense: 140000, total: 800000 },
 ];
 
-function CombinedSVGChart() {
-  const chartHeight = 120;
-  const chartWidth = 340;
-  const incomeData = mockChartData.map(d => d.income);
-  const expenseData = mockChartData.map(d => d.expense);
-  const totalData = mockChartData.map(d => d.total);
-  const months = mockChartData.map(d => d.month);
-  const contentInset = { top: 16, bottom: 16 };
-
-  // 疊加兩組 BarChart
+function VictoryCombinedChart() {
   return (
-    <>
-      <BarChart
-        style={{ height: chartHeight, width: chartWidth, position: 'absolute' }}
-        data={incomeData}
-        svg={{ fill: '#9F9' }}
-        spacingInner={0.4}
-        contentInset={contentInset}
-        yAccessor={({ item }) => item}
-        gridMin={0}
-      />
-      <BarChart
-        style={{ height: chartHeight, width: chartWidth }}
-        data={expenseData}
-        svg={{ fill: '#F77' }}
-        spacingInner={0.4}
-        contentInset={contentInset}
-        yAccessor={({ item }) => item}
-        gridMin={0}
+    <View style={{ backgroundColor: '#232936', borderRadius: 12, padding: 8, marginBottom: 16 }}>
+      <VictoryChart
+        height={180}
+        width={360}
+        padding={{ top: 24, bottom: 40, left: 48, right: 24 }}
+        domainPadding={{ x: 24, y: 16 }}
+        theme={VictoryTheme.material}
+        style={{ background: { fill: '#232936' } }}
       >
-        {/* 疊加折線圖 */}
-        <LineChart
-          style={{ height: chartHeight, width: chartWidth }}
-          data={totalData}
-          svg={{ stroke: '#4A90E2', strokeWidth: 2 }}
-          contentInset={contentInset}
-          yMin={0}
-        >
-          {/* 資料點 */}
-          {({ line }) => (
-            <G>
-              {totalData.map((value, index) => {
-                const x = (chartWidth / (totalData.length - 1)) * index;
-                const y = line.y(value);
-                return (
-                  <G key={index}>
-                    <Rect x={x - 5} y={y - 5} width={10} height={10} rx={5} fill="#4A90E2" />
-                  </G>
-                );
-              })}
-            </G>
-          )}
-        </LineChart>
-      </BarChart>
-      {/* X 軸月份標籤 */}
-      <XAxis
-        style={{ marginTop: 4, width: chartWidth, alignSelf: 'center' }}
-        data={months}
-        formatLabel={(_, i) => months[i]}
-        contentInset={{ left: 20, right: 20 }}
-        svg={{ fontSize: 12, fill: '#aaa' }}
-        scale={scale.scaleBand}
-      />
-    </>
+        {/* X 軸 */}
+        <VictoryAxis
+          tickValues={chartData.map((d) => d.month)}
+          style={{
+            axis: { stroke: '#aaa' },
+            tickLabels: { fill: '#aaa', fontSize: 12, padding: 8 },
+            grid: { stroke: 'none' },
+          }}
+        />
+        {/* Y 軸 */}
+        <VictoryAxis
+          dependentAxis
+          style={{
+            axis: { stroke: '#aaa' },
+            tickLabels: { fill: '#aaa', fontSize: 10 },
+            grid: { stroke: '#444', strokeDasharray: '4,4' },
+          }}
+        />
+        {/* 收入/支出長條圖 */}
+        <VictoryGroup offset={16}>
+          <VictoryBar
+            data={chartData}
+            x="month"
+            y="income"
+            barWidth={12}
+            style={{ data: { fill: '#9F9', borderRadius: 4 } }}
+          />
+          <VictoryBar
+            data={chartData}
+            x="month"
+            y="expense"
+            barWidth={12}
+            style={{ data: { fill: '#F77', borderRadius: 4 } }}
+          />
+        </VictoryGroup>
+        {/* 總資產折線圖 */}
+        <VictoryLine
+          data={chartData}
+          x="month"
+          y="total"
+          style={{ data: { stroke: '#4A90E2', strokeWidth: 2 } }}
+        />
+      </VictoryChart>
+    </View>
   );
 }
 
@@ -112,10 +101,8 @@ export default function AccountOverview() {
   return (
     <View style={styles.container}>
       <Text style={styles.title}>帳戶總覽</Text>
-      {/* SVG 專業圖表 */}
-      <View style={{ alignItems: 'center', marginBottom: 16 }}>
-        <CombinedSVGChart />
-      </View>
+      {/* Victory 專業圖表 */}
+      <VictoryCombinedChart />
       <FlatList
         data={mockAccounts}
         keyExtractor={item => item.id}
