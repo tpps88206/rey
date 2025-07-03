@@ -1,3 +1,4 @@
+import { FontAwesome5 } from '@expo/vector-icons';
 import { Tabs, useRouter, useSegments } from 'expo-router';
 import { TouchableOpacity } from 'react-native';
 
@@ -39,14 +40,14 @@ export default function TabLayout() {
         name="explore"
         options={{
           title: '帳戶',
-          tabBarIcon: ({ color, size }: any) => <Ionicons name="wallet-outline" size={size} color={color} />,
+          tabBarIcon: ({ color, size }: any) => <FontAwesome5 name="wallet" size={size} color={color} />,
         }}
       />
       <Tabs.Screen
         name="project"
         options={{
           title: '專案/預算',
-          tabBarIcon: ({ color, size }: any) => <Ionicons name="wallet-outline" size={size} color={color} />,
+          tabBarIcon: ({ color, size }: any) => <FontAwesome5 name="folder-open" size={size} color={color} />,
         }}
       />
       <Tabs.Screen
@@ -54,7 +55,7 @@ export default function TabLayout() {
         options={{
           title: '',
           tabBarIcon: ({ color, size }: any) => (
-            <Ionicons name="add-circle" size={48} color="#3578E5" />
+            <FontAwesome5 name="plus-circle" size={48} color="#3578E5" />
           ),
           tabBarButton: (props: any) => <CenterTabButton {...props} />,
         }}
@@ -63,14 +64,14 @@ export default function TabLayout() {
         name="report"
         options={{
           title: '報表',
-          tabBarIcon: ({ color, size }: any) => <Ionicons name="stats-chart-outline" size={size} color={color} />,
+          tabBarIcon: ({ color, size }: any) => <FontAwesome5 name="chart-bar" size={size} color={color} />,
         }}
       />
       <Tabs.Screen
         name="more"
         options={{
           title: '更多',
-          tabBarIcon: ({ color, size }: any) => <Ionicons name="menu-outline" size={size} color={color} />,
+          tabBarIcon: ({ color, size }: any) => <FontAwesome5 name="bars" size={size} color={color} />,
         }}
       />
     </Tabs>
