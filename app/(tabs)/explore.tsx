@@ -15,32 +15,50 @@ const mockAccounts: Account[] = [
   { id: '4', name: '元大銀行證券', type: 'stock', balance: 370000, icon: 'stock' },
 ];
 
-const mockBarData = [
-  { month: '10月', income: 120000, expense: 90000 },
-  { month: '11月', income: 100000, expense: 95000 },
-  { month: '12月', income: 110000, expense: 100000 },
-  { month: '2025/1', income: 300000, expense: 120000 },
-  { month: '2月', income: 250000, expense: 110000 },
-  { month: '3月', income: 400000, expense: 200000 },
-  { month: '4月', income: 180000, expense: 120000 },
-  { month: '5月', income: 160000, expense: 130000 },
-  { month: '6月', income: 170000, expense: 140000 },
+const mockChartData = [
+  { month: '10月', income: 120000, expense: 90000, total: 200000 },
+  { month: '11月', income: 100000, expense: 95000, total: 210000 },
+  { month: '12月', income: 110000, expense: 100000, total: 220000 },
+  { month: '2025/1', income: 300000, expense: 120000, total: 400000 },
+  { month: '2月', income: 250000, expense: 110000, total: 500000 },
+  { month: '3月', income: 400000, expense: 200000, total: 700000 },
+  { month: '4月', income: 180000, expense: 120000, total: 750000 },
+  { month: '5月', income: 160000, expense: 130000, total: 770000 },
+  { month: '6月', income: 170000, expense: 140000, total: 800000 },
 ];
 
-function SimpleLineChart() {
-  const max = Math.max(...mockBarData.map(d => Math.max(d.income, d.expense)));
-  const min = Math.min(...mockBarData.map(d => Math.min(d.income, d.expense)));
+function CombinedChart() {
   const chartHeight = 120;
-  const chartWidth = 320; // 可用 Dimensions.get('window').width 取代
+  const chartWidth = 320;
   const padding = 24;
-  const points = mockBarData.map((d, i) => {
-    const x = padding + i * ((chartWidth - 2 * padding) / (mockBarData.length - 1));
-    const y = padding + (chartHeight - 2 * padding) * (1 - (d.income - min) / (max - min || 1));
+  const barWidth = 10;
+  const barGap = 4;
+  const groupWidth = barWidth * 2 + barGap * 2;
+  const maxTotal = Math.max(...mockChartData.map(d => d.total));
+  const maxBar = Math.max(...mockChartData.map(d => Math.max(d.income, d.expense)));
+  // 折線點位
+  const points = mockChartData.map((d, i) => {
+    const x = padding + i * ((chartWidth - 2 * padding) / (mockChartData.length - 1));
+    const y = padding + (chartHeight - 2 * padding) * (1 - d.total / maxTotal);
     return { x, y };
   });
   return (
-    <View style={[barStyles.lineChartBox, { height: chartHeight }]}> 
-      {/* 折線 */}
+    <View style={[barStyles.combinedChartBox, { height: chartHeight }]}> 
+      {/* 長條圖 */}
+      <View style={[barStyles.barRow, { height: chartHeight - padding }]}> 
+        {mockChartData.map((d, i) => {
+          const baseX = padding + i * ((chartWidth - 2 * padding) / (mockChartData.length - 1)) - groupWidth / 2;
+          const incomeH = (chartHeight - 2 * padding) * d.income / maxBar;
+          const expenseH = (chartHeight - 2 * padding) * d.expense / maxBar;
+          return (
+            <View key={i} style={[barStyles.barGroup, { left: baseX, bottom: 0 }]}> 
+              <View style={[barStyles.bar, { height: incomeH, backgroundColor: '#9F9', width: barWidth, marginRight: barGap }]} />
+              <View style={[barStyles.bar, { height: expenseH, backgroundColor: '#F77', width: barWidth }]} />
+            </View>
+          );
+        })}
+      </View>
+      {/* 折線圖 */}
       {points.map((pt, i) =>
         i > 0 ? (
           <View
@@ -59,7 +77,7 @@ function SimpleLineChart() {
           />
         ) : null
       )}
-      {/* 資料點 */}
+      {/* 折線資料點 */}
       {points.map((pt, i) => (
         <View
           key={i}
@@ -71,7 +89,7 @@ function SimpleLineChart() {
       ))}
       {/* X 軸標籤 */}
       <View style={[barStyles.xLabelsRow, { width: chartWidth, left: 0, top: chartHeight - padding + 4 }]}> 
-        {mockBarData.map((d, i) => (
+        {mockChartData.map((d, i) => (
           <Text key={i} style={barStyles.label}>{d.month}</Text>
         ))}
       </View>
@@ -80,8 +98,10 @@ function SimpleLineChart() {
 }
 
 const barStyles = StyleSheet.create({
-  chartContainer: { marginBottom: 16, marginTop: 8 },
-  lineChartBox: { width: '100%', maxWidth: 400, alignSelf: 'center', backgroundColor: '#232936', position: 'relative', marginBottom: 16 },
+  combinedChartBox: { width: '100%', maxWidth: 400, alignSelf: 'center', backgroundColor: '#232936', position: 'relative', marginBottom: 16 },
+  barRow: { position: 'absolute', flexDirection: 'row', width: '100%', bottom: 0, left: 0 },
+  barGroup: { position: 'absolute', flexDirection: 'row', alignItems: 'flex-end' },
+  bar: { borderRadius: 3 },
   line: { position: 'absolute', height: 2, backgroundColor: '#4A90E2', borderRadius: 2 },
   dot: { position: 'absolute', width: 10, height: 10, borderRadius: 5, backgroundColor: '#4A90E2', borderWidth: 2, borderColor: '#fff' },
   label: { color: '#aaa', fontSize: 10, marginTop: 2 },
@@ -92,7 +112,8 @@ export default function AccountOverview() {
   return (
     <View style={styles.container}>
       <Text style={styles.title}>帳戶總覽</Text>
-      <SimpleLineChart />
+      {/* 折線圖+長條圖 */}
+      <CombinedChart />
       <FlatList
         data={mockAccounts}
         keyExtractor={item => item.id}
