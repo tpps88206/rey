@@ -1,7 +1,29 @@
 import { Ionicons } from '@expo/vector-icons';
-import { Tabs } from 'expo-router';
+import { Tabs, useRouter, useSegments } from 'expo-router';
+import { TouchableOpacity } from 'react-native';
 
 import { useColorScheme } from '@/hooks/useColorScheme';
+
+function CenterTabButton({ children }: any) {
+  const router = useRouter();
+  const segments = useSegments();
+  const isHome = segments[segments.length - 1] === 'index';
+  return (
+    <TouchableOpacity
+      onPress={() => {
+        if (isHome) {
+          router.push('/add');
+        } else {
+          router.push('/');
+        }
+      }}
+      style={{ alignItems: 'center', justifyContent: 'center', top: -16 }}
+      activeOpacity={0.85}
+    >
+      {children}
+    </TouchableOpacity>
+  );
+}
 
 export default function TabLayout() {
   const colorScheme = useColorScheme();
@@ -33,8 +55,9 @@ export default function TabLayout() {
         options={{
           title: '',
           tabBarIcon: ({ color, size }: any) => (
-            <Ionicons name="add-circle" size={48} color="#3578E5" style={{ marginTop: -16 }} />
+            <Ionicons name="add-circle" size={48} color="#3578E5" />
           ),
+          tabBarButton: (props: any) => <CenterTabButton {...props} />,
         }}
       />
       <Tabs.Screen

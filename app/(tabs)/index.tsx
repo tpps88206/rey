@@ -55,9 +55,20 @@ export default function HomeScreen() {
 
   return (
     <View style={styles.container}>
-      {/* 日曆區塊（之後可替換成元件） */}
+      {/* 日曆區塊（靜態 UI） */}
       <View style={styles.calendarBox}>
+        <Text style={styles.timeText}>12:05</Text>
         <Text style={styles.dateText}>2025/6/1</Text>
+        <View style={styles.calendarRow}>
+          <Text style={styles.monthCircle}>6月</Text>
+          <Text style={styles.calendarDay}>02</Text>
+          <Text style={styles.calendarDay}>03</Text>
+          <Text style={styles.calendarDayDim}>04</Text>
+          <Text style={styles.calendarDay}>05</Text>
+          <Text style={styles.calendarDay}>06</Text>
+          <Text style={styles.calendarDaySat}>07</Text>
+        </View>
+        {/* ...可再擴充更多行... */}
       </View>
       {/* 當月統計區塊 */}
       <View style={styles.summaryBox}>
@@ -85,8 +96,14 @@ export default function HomeScreen() {
 
 const styles = StyleSheet.create({
   container: { flex: 1, backgroundColor: '#232936', padding: 10 },
-  calendarBox: { padding: 10, alignItems: 'center' },
-  dateText: { color: '#fff', fontSize: 24 },
+  calendarBox: { padding: 10, alignItems: 'center', marginBottom: 8, backgroundColor: '#232936' },
+  timeText: { color: '#fff', fontSize: 18, alignSelf: 'flex-start' },
+  dateText: { color: '#fff', fontSize: 24, marginBottom: 8 },
+  calendarRow: { flexDirection: 'row', justifyContent: 'space-between', width: '100%', marginBottom: 4 },
+  monthCircle: { color: '#F77', borderWidth: 2, borderColor: '#4A90E2', borderRadius: 16, paddingHorizontal: 8, paddingVertical: 2, marginRight: 8 },
+  calendarDay: { color: '#fff', marginHorizontal: 4 },
+  calendarDayDim: { color: '#888', marginHorizontal: 4 },
+  calendarDaySat: { color: '#9F9', marginHorizontal: 4 },
   summaryBox: { backgroundColor: '#222', borderRadius: 10, padding: 16, marginVertical: 10 },
   summaryText: { color: '#fff', fontSize: 18 },
   expenseText: { color: '#F77', fontSize: 16 },
