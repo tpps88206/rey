@@ -8,6 +8,7 @@ function CenterTabButton({ children }: any) {
   const router = useRouter();
   const segments = useSegments();
   const isHome = segments.length === 1 && segments[0] === '';
+  console.log(segments)
   return (
     <TouchableOpacity
       onPress={() => {
