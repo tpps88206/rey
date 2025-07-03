@@ -7,15 +7,14 @@ import { useColorScheme } from '@/hooks/useColorScheme';
 function CenterTabButton({ children }: any) {
   const router = useRouter();
   const segments = useSegments();
-  const last = segments[segments.length - 1];
-  const isHome = last === '' || last === 'index';
+  const isHome = segments.length === 1 && segments[0] === '';
   return (
     <TouchableOpacity
       onPress={() => {
         if (isHome) {
           router.navigate('add');
         } else {
-          router.navigate('index');
+          router.navigate('/');
         }
       }}
       style={{ alignItems: 'center', justifyContent: 'center', top: -16 }}
@@ -66,13 +65,6 @@ export default function TabLayout() {
         options={{
           title: '報表',
           tabBarIcon: ({ color, size }: any) => <Ionicons name="stats-chart-outline" size={size} color={color} />,
-        }}
-      />
-      <Tabs.Screen
-        name="more"
-        options={{
-          title: '更多',
-          tabBarIcon: ({ color, size }: any) => <Ionicons name="menu-outline" size={size} color={color} />,
         }}
       />
     </Tabs>
